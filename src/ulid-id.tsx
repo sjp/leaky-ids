@@ -6,7 +6,7 @@ export interface UlidIdProps {
 export const UlidId = ({ id, timestamp }: UlidIdProps) => {
   return (
     <>
-      {id} {timestamp}
+      This ID is a ULID id: {id}. It was generated at: {timestamp}
     </>
   );
 };

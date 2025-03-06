@@ -10,7 +10,10 @@
     "lint": "npx @biomejs/biome lint --error-on-warnings"
   },
   "dependencies": {
-    "preact": "^10.26.2"
+    "@picocss/pico": "^2.0.6",
+    "@theme-toggles/react": "^4.1.0",
+    "preact": "^10.26.4",
+    "preact-iso": "^2.9.1"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",

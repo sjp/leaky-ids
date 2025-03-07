@@ -1,5 +1,4 @@
 import { useCallback } from "preact/hooks";
-import "./app.css";
 import { useTheme } from "./hooks/use-theme";
 import { Classic } from "./icons/dark-mode-toggle-icon";
 
@@ -22,8 +21,10 @@ export const Header = () => {
           alignItems: "center",
         }}
       >
-        <strong style={{ marginBottom: "var(--pico-spacing)" }}>
-          getwifi.link
+        <strong
+          style={{ marginBottom: "var(--pico-spacing)", textWrap: "nowrap" }}
+        >
+          Is my ID leaky?
         </strong>
         <div
           class="container"

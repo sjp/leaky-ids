@@ -1,5 +1,4 @@
 import { GitHubIcon } from "./icons/github-icon";
-import "./root.css";
 
 export const Footer = () => {
   return (
@@ -8,7 +7,7 @@ export const Footer = () => {
         Built by sjp
       </a>{" "}
       <a
-        href="https://github.com/sjp/getwifi-web"
+        href="https://github.com/sjp/leaky-ids"
         class="secondary"
         target="_blank"
         rel="noreferrer noopener"

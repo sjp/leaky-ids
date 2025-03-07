@@ -12,9 +12,9 @@ export const Root = () => {
         <section>
           <article>
             <header>
-              <h1 style={{ textAlign: "center" }}>This is the main header</h1>
+              <h1 style={{ textAlign: "center" }}>Is my ID leaky?</h1>
             </header>
-            <p>This is a call-to-action text</p>
+            <p>Check to see whether the identifier you use in your application can leak information to competitors, customers, or malicious adversaries.</p>
           </article>
         </section>
         <section>
@@ -29,7 +29,7 @@ export const Root = () => {
                       autofocus={true}
                       type="text"
                       onInput={(evt) => {
-                        setUserId(evt.currentTarget.value);
+                        setUserId(evt.currentTarget.value.trim());
                       }}
                     />
                   </label>

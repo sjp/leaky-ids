@@ -1,4 +1,3 @@
-import "./index.css";
 import { App } from "./app.tsx";
 import { hydrate, prerender as ssr } from "preact-iso";
 

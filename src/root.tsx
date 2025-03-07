@@ -1,7 +1,7 @@
 import { useState } from "preact/hooks";
 import { Header } from "./header";
 import { Footer } from "./footer";
-import { Id } from "./id";
+import { IdInformation } from "./id-information";
 
 export const Root = () => {
   const [userId, setUserId] = useState("");
@@ -45,7 +45,7 @@ export const Root = () => {
         </section>
         {!!userId && (
           <section>
-            <Id id={userId} />
+            <IdInformation id={userId} />
           </section>
         )}
       </main>

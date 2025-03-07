@@ -2,7 +2,7 @@ export interface DefaultIdProps {
   id: string;
 }
 
-export const DefaultId = ({ id }: DefaultIdProps) => {
+export const UnknownId = ({ id }: DefaultIdProps) => {
   return (
     <article>
       <header>

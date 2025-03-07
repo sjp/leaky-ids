@@ -1,4 +1,4 @@
-import { DefaultId } from "./default-id";
+import { UnknownId } from "./unknown-id";
 import { IntegerId } from "./integer-id";
 import { parseIntegerId, parseUlidId, parseUuidV7Id } from "./parsing";
 import { UlidId } from "./ulid-id";
@@ -8,7 +8,7 @@ export interface IdProps {
   id: string;
 }
 
-export const Id = ({ id }: IdProps) => {
+export const IdInformation = ({ id }: IdProps) => {
   const intParseResult = parseIntegerId(id);
   if (intParseResult.success && intParseResult.result) {
     return <IntegerId id={intParseResult.result} />;
@@ -31,5 +31,5 @@ export const Id = ({ id }: IdProps) => {
     );
   }
 
-  return <DefaultId id={id} />;
+  return <UnknownId id={id} />;
 };

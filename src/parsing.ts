@@ -11,10 +11,15 @@ const IntegerParseFailure: ParseResult<number> = {
   result: null,
 };
 
+const ASCII_NUMERIC_CHARS_ONLY = /^\d+$/; 
+
 export const parseIntegerId = (input: string): ParseResult<number> => {
   if (!input) {
     return IntegerParseFailure;
   }
+
+  if (!input.match(ASCII_NUMERIC_CHARS_ONLY))
+    return IntegerParseFailure;
 
   const num = Number.parseInt(input, 10);
   if (!num) {

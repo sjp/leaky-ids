@@ -22,7 +22,7 @@ test.each(["", "  "])(
   }
 );
 
-test.each(["a", "b", "NaN", "1.3"])(
+test.each(["a", "b", "NaN", "1.3", "12,345"])(
   "parseIntegerId - non-integer values return false: '%s'",
   (input) => {
     const result = parseIntegerId(input);

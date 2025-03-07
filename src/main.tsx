@@ -1,6 +1,15 @@
-import { render } from "preact";
 import "./index.css";
 import { App } from "./app.tsx";
+import { hydrate, prerender as ssr } from "preact-iso";
 
-const renderNode = document.getElementById("app");
-if (renderNode) { render(<App />, renderNode); }
+export const Main = () => {
+  return <App />;
+};
+
+if (typeof window !== "undefined") {
+  hydrate(<Main />, document.getElementById("app") as HTMLElement);
+}
+
+export const prerender = async (_data: unknown) => {
+  return await ssr(<Main />);
+};

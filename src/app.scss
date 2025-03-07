@@ -1,0 +1,67 @@
+@use "@picocss/pico/scss/pico" with (
+  $semantic-root-element: "#app",
+  $enable-semantic-container: true,
+  $modules: (
+    // Theme
+    "themes/default": true,
+
+    // Layout
+    "layout/document": true,
+    "layout/landmarks": true,
+    "layout/container": true,
+    "layout/section": true,
+    "layout/grid": true,
+    "layout/overflow-auto": true,
+
+    // Content
+    "content/link": true,
+    "content/typography": true,
+    "content/embedded": true,
+    "content/button": true,
+    "content/table": false,
+    "content/code": true,
+    "content/figure": false,
+    "content/miscs": true,
+
+    // Forms
+    "forms/basics": true,
+    "forms/checkbox-radio-switch": true,
+    "forms/input-color": false,
+    "forms/input-date": false,
+    "forms/input-file": false,
+    "forms/input-range": false,
+    "forms/input-search": false,
+
+    // Components
+    "components/accordion": false,
+    "components/card": true,
+    "components/dropdown": true,
+    "components/group": false,
+    "components/loading": false,
+    "components/modal": false,
+    "components/nav": false,
+    "components/progress": false,
+    "components/tooltip": false,
+
+    // Utilities
+    "utilities/accessibility": false,
+    "utilities/reduce-motion": false,
+  )
+);
+
+footer {
+  text-align: center;
+}
+
+button.theme-toggle {
+  color: var(--pico-form-element-color);
+  background-color: var(--pico-form-element-background-color);
+}
+
+.theme-toggle svg {
+  vertical-align: -0.125em;
+}
+
+.theme-toggle:focus {
+  box-shadow: none;
+}

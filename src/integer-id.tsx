@@ -1,8 +1,25 @@
+// very rare but handling the case where someone
+// may have used a number that is not safely incrementable in JS
+// e.g. if they use Number.MAX_SAFE_INTEGER we cannot increment than that
+const isDoubleIncrementable = (id: number) => {
+  return id <= Number.MAX_SAFE_INTEGER - 2;
+};
+
+const FALLBACK_USER_ID = 12345;
+
+// returns 3 exactly
+const getExampleIncrementingUserIds = (id: number) => {
+  const resolvedId = isDoubleIncrementable(id) ? id : FALLBACK_USER_ID;
+  return [resolvedId, resolvedId + 1, resolvedId + 2];
+};
+
 export interface IntegerIdProps {
   id: number;
 }
 
 export const IntegerId = ({ id }: IntegerIdProps) => {
+  const exampleIncrementingIds = getExampleIncrementingUserIds(id);
+
   return (
     <article>
       <header>
@@ -22,10 +39,11 @@ export const IntegerId = ({ id }: IntegerIdProps) => {
       </p>
       <p>
         Malicious users may also use this information to perform an
-        "enumeration" attack, by browsing to pages like <code>/user/12345</code>
-        and incrementing to <code>/user/12346</code>, <code>/user/12347</code>{" "}
-        and so on. If a web application is not adequately secured this can leak
-        further information.
+        &ldquo;enumeration attack&rdquo;, by browsing to pages like{" "}
+        <code>/user/{exampleIncrementingIds[0]}</code>
+        and incrementing to <code>/user/{exampleIncrementingIds[1]}</code>,{" "}
+        <code>/user/{exampleIncrementingIds[2]}</code> and so on. If a web
+        application is not adequately secured this can leak further information.
       </p>
     </article>
   );

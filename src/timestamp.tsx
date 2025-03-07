@@ -10,7 +10,7 @@ export const Timestamp = ({ timestamp }: TimestampProps) => {
   const tz = getTimeZoneName();
 
   return (
-    <table>
+    <table width="100%">
       <tbody style={{ textAlign: "left" }}>
         <tr>
           <th scope="row">Creation Date</th>

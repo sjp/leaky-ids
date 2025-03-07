@@ -21,8 +21,13 @@ export const parseIntegerId = (input: string): ParseResult<number> => {
     return IntegerParseFailure;
   }
 
-  const isInt = Number.isInteger(num);
+  const isInt = Number.isInteger(Number.parseFloat(input));
   if (!isInt) {
+    return IntegerParseFailure;
+  }
+
+  // consider 1 to be the natural starting point for sequential ids
+  if (num < 1) {
     return IntegerParseFailure;
   }
 
@@ -47,13 +52,26 @@ export const parseUlidId = (input: string): TimeBasedId | null => {
     return null;
   }
 
-  const timestamp = getTimestampFromUlid(input);
+  const timestamp = getTimestampFromUlid(input.toUpperCase());
   if (!timestamp) {
     return null;
   }
 
   return { id: input, timestamp: new Date(timestamp) };
 };
+
+// hyphen-stripped UUIDs are just UUIDs without hyphen separators
+// e.g. the following are equivalent:
+// - 01956e96-c283-702e-9e6d-1e94c85ce6a6
+// - 01956e96c283702e9e6d1e94c85ce6a6
+const HYPHEN_STRIPPED_UUID = /^(.{8})(.{4})(.{4})(.{4})(.{12})$/;
+const HYPHEN_STRIPPED_UUID_LENGTH = 32; // e.g. 
+
+const normalizeUuid = (input: string): string => {
+  return input.length === HYPHEN_STRIPPED_UUID_LENGTH 
+    ? input.replace(HYPHEN_STRIPPED_UUID, "$1-$2-$3-$4-$5") 
+    : input;
+}
 
 const getTimestampFromUuidV7 = (input: string): number | null => {
   if (!uuidValidate(input)) {
@@ -72,7 +90,10 @@ export const parseUuidV7Id = (input: string): TimeBasedId | null => {
   if (!input) {
     return null;
   }
-  const timestamp = getTimestampFromUuidV7(input);
+
+  const normalizedUuid = normalizeUuid(input);
+
+  const timestamp = getTimestampFromUuidV7(normalizedUuid);
   if (!timestamp) {
     return null;
   }

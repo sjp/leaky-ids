@@ -1,9 +1,10 @@
 import { useState } from "preact/hooks";
 import { Header } from "./header";
 import { Footer } from "./footer";
+import { Id } from "./id";
 
 export const Root = () => {
-  const [, setUserId] = useState("");
+  const [userId, setUserId] = useState("");
 
   return (
     <>
@@ -14,7 +15,11 @@ export const Root = () => {
             <header>
               <h1 style={{ textAlign: "center" }}>Is my ID leaky?</h1>
             </header>
-            <p>Check to see whether the identifier you use in your application can leak information to competitors, customers, or malicious adversaries.</p>
+            <p>
+              Check to see whether the identifier you use in your application
+              can leak information to competitors, customers, or malicious
+              adversaries.
+            </p>
           </article>
         </section>
         <section>
@@ -38,6 +43,11 @@ export const Root = () => {
             </div>
           </div>
         </section>
+        {!!userId && (
+          <section>
+            <Id id={userId} />
+          </section>
+        )}
       </main>
       <Footer />
     </>

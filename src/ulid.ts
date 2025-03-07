@@ -4,7 +4,7 @@
 // they do, we're no longer making ulids!
 const ENCODING = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"; // Crockford's Base32
 const ENCODING_LEN = ENCODING.length;
-const TIME_MAX = Math.pow(2, 48) - 1;
+const TIME_MAX = 2 ** 48 - 1;
 const TIME_LEN = 10;
 const RANDOM_LEN = 16;
 
@@ -22,16 +22,16 @@ export const decodeTime = (id: string): number => {
   if (id.length !== TIME_LEN + RANDOM_LEN) {
     throw createError("malformed ulid");
   }
-  var time = id
+  const time = id
     .substr(0, TIME_LEN)
     .split("")
     .reverse()
     .reduce((carry, char, index) => {
       const encodingIndex = ENCODING.indexOf(char);
       if (encodingIndex === -1) {
-        throw createError("invalid character found: " + char);
+        throw createError(`invalid character found: ${char}`);
       }
-      return (carry += encodingIndex * Math.pow(ENCODING_LEN, index));
+      return carry + encodingIndex * ENCODING_LEN ** index;
     }, 0);
   if (time > TIME_MAX) {
     throw createError("malformed ulid, timestamp too large");

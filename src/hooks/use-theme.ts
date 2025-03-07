@@ -2,6 +2,14 @@ import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 
 export type Theme = "light" | "dark";
 
+const getMatches = (query: string): boolean => {
+  if (typeof window === "undefined") {
+    return false;
+  }
+    
+  return window.matchMedia(query).matches;
+};
+
 type UseMediaQueryOptions = {
   defaultValue?: boolean;
   initializeWithValue?: boolean;
@@ -14,10 +22,6 @@ export function useMediaQuery(
     initializeWithValue = true,
   }: UseMediaQueryOptions = {}
 ): boolean {
-  const getMatches = (query: string): boolean => {
-    return window.matchMedia(query).matches;
-  };
-
   const [matches, setMatches] = useState<boolean>(() => {
     if (initializeWithValue) {
       return getMatches(query);
@@ -57,9 +61,6 @@ export function useMediaQuery(
 }
 
 const useSystemDarkModePreference = (): Theme => {
-  if (typeof window === "undefined") {
-    return "dark";
-  }
   return useMediaQuery("(prefers-color-scheme: dark)") ? "dark" : "light";
 };
 

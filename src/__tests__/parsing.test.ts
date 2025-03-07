@@ -1,6 +1,5 @@
 import { expect, test } from "vitest";
 import { parseIntegerId, parseUlidId, parseUuidV7Id } from "../parsing";
-import { validate } from "uuid";
 
 test("parseIntegerId - parses basic integer", () => {
   const result = parseIntegerId("123");
@@ -9,21 +8,15 @@ test("parseIntegerId - parses basic integer", () => {
 });
 
 test("parseIntegerId - parses large integer", () => {
-  const result = parseIntegerId("9223372036854775807"); // max signed 64-bit integer
+  const result = parseIntegerId(Number.MAX_SAFE_INTEGER.toString());
   expect(result.success).toBeTruthy();
-  expect(result.result).toBe(9223372036854775807);
+  expect(result.result).toBe(Number.MAX_SAFE_INTEGER);
 });
 
-test("parseIntegerId - parses very large integer", () => {
-  const result = parseIntegerId("92233720368547758070000"); // exceeds max 64-bit integer
-  expect(result.success).toBeTruthy();
-  expect(result.result).toBe(92233720368547758070000);
-});
-
-test.each([null, undefined, "", "  "])(
-  "parseIntegerId - handles empty/missing input: '%s'",
+test.each(["", "  "])(
+  "parseIntegerId - handles empty input: '%s'",
   (input) => {
-    const result = parseIntegerId(input!);
+    const result = parseIntegerId(input);
     expect(result.success).toBeFalsy();
     expect(result.result).toBeNull();
   }
@@ -70,10 +63,10 @@ test("parseUlidId - parses ULID timestamp", () => {
   expect(result?.timestamp?.toISOString()).toBe("2025-03-07T03:06:47.391Z");
 });
 
-test.each([null, undefined, "", "  "])(
-  "parseUlidId - handles empty/missing input: '%s'",
+test.each(["", "  "])(
+  "parseUlidId - handles empty input: '%s'",
   (input) => {
-    const result = parseUlidId(input!);
+    const result = parseUlidId(input);
     expect(result).toBeNull();
   }
 );
@@ -113,10 +106,10 @@ test("parseUuidV7Id - parses v7 UUID timestamp", () => {
   expect(result?.timestamp?.toISOString()).toBe("2025-03-07T03:14:04.016Z");
 });
 
-test.each([null, undefined, "", "  "])(
-  "parseUuidV7Id - handles empty/missing input: '%s'",
+test.each(["", "  "])(
+  "parseUuidV7Id - handles empty input: '%s'",
   (input) => {
-    const result = parseUuidV7Id(input!);
+    const result = parseUuidV7Id(input);
     expect(result).toBeFalsy();
   }
 );

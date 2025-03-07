@@ -11,17 +11,17 @@
     "layout/container": true,
     "layout/section": true,
     "layout/grid": true,
-    "layout/overflow-auto": true,
+    "layout/overflow-auto": false,
 
     // Content
     "content/link": true,
     "content/typography": true,
-    "content/embedded": true,
-    "content/button": true,
+    "content/embedded": false,
+    "content/button": false,
     "content/table": false,
     "content/code": true,
     "content/figure": false,
-    "content/miscs": true,
+    "content/miscs": false,
 
     // Forms
     "forms/basics": true,

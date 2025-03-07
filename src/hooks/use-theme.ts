@@ -57,11 +57,17 @@ export function useMediaQuery(
 }
 
 const useSystemDarkModePreference = (): Theme => {
+  if (typeof window === "undefined") {
+    return "dark";
+  }
   return useMediaQuery("(prefers-color-scheme: dark)") ? "dark" : "light";
 };
 
 export const useTheme = () => {
-  const htmlRef = useRef(document.querySelector("html"));
+  const rootElement =
+    typeof window !== "undefined" ? document.querySelector("html") : null;
+
+  const htmlRef = useRef(rootElement);
   const systemTheme = useSystemDarkModePreference();
 
   const [theme, setTheme] = useState(systemTheme);

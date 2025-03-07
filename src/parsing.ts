@@ -1,4 +1,4 @@
-import { decodeTime } from "ulid";
+import { decodeTime } from "./ulid";
 import { version as uuidVersion, validate as uuidValidate } from "uuid";
 
 export interface ParseResult<T> {

@@ -16,7 +16,6 @@
     "@theme-toggles/react": "^4.1.0",
     "preact": "^10.26.4",
     "preact-iso": "^2.9.1",
-    "ulid": "^2.3.0",
     "uuid": "^11.1.0"
   },
   "devDependencies": {

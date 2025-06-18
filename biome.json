@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.0.0/schema.json",
   "formatter": {
     "enabled": true,
     "formatWithErrors": false,
@@ -9,13 +9,24 @@
     "lineWidth": 100,
     "attributePosition": "auto"
   },
-  "organizeImports": { "enabled": true },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
     "enabled": true,
     "rules": {
-      "all": true,
       "correctness": {
         "useImportExtensions": "off"
+      },
+      "style": {
+        "noParameterAssign": "error",
+        "useAsConstAssertion": "error",
+        "useDefaultParameterLast": "error",
+        "useEnumInitializers": "error",
+        "useSelfClosingElements": "error",
+        "useSingleVarDeclarator": "error",
+        "noUnusedTemplateLiteral": "error",
+        "useNumberNamespace": "error",
+        "noInferrableTypes": "error",
+        "noUselessElse": "error"
       }
     }
   },
@@ -33,7 +44,6 @@
     }
   },
   "files": {
-    "include": ["*.ts", "*.tsx"],
-    "ignore": ["vite.config.ts"]
+    "includes": ["**/*.ts", "**/*.tsx", "!**/vite.config.ts"]
   }
 }

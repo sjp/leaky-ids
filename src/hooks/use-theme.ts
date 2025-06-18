@@ -34,7 +34,6 @@ export function useMediaQuery(
     setMatches(getMatches(query));
   };
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: this is sourced from elsewhere and the dependency set is correct
   useLayoutEffect(() => {
     const matchMedia = window.matchMedia(query);
 

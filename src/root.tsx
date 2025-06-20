@@ -2,9 +2,11 @@ import { useState } from "preact/hooks";
 import { Header } from "./header";
 import { Footer } from "./footer";
 import { IdInformation } from "./id-information";
+import { useDebounce } from "./hooks/use-debounce";
 
 export const Root = () => {
   const [userId, setUserId] = useState("");
+  const debouncedUserId = useDebounce(userId, 500);
 
   return (
     <>
@@ -43,9 +45,9 @@ export const Root = () => {
             </div>
           </div>
         </section>
-        {!!userId && (
+        {!!debouncedUserId && (
           <section>
-            <IdInformation id={userId} />
+            <IdInformation id={debouncedUserId} />
           </section>
         )}
       </main>

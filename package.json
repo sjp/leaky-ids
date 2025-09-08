@@ -23,7 +23,7 @@
     "@preact/preset-vite": "^2.10.2",
     "sass-embedded": "^1.92.1",
     "typescript": "^5.9.2",
-    "vite": "^7.1.4",
+    "vite": "^7.1.5",
     "vitest": "^3.2.4"
   }
 }

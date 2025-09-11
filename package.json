@@ -19,7 +19,7 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.2.3",
+    "@biomejs/biome": "^2.2.4",
     "@preact/preset-vite": "^2.10.2",
     "sass-embedded": "^1.92.1",
     "typescript": "^5.9.2",

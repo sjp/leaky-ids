@@ -1,5 +1,8 @@
 name: CI
 
+permissions:
+  contents: read
+
 on:
   push:
     branches: [ master ]
@@ -13,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [22.x, 23.x, latest]
+        node-version: [22.x, 23.x, 24.x, latest]
 
     steps:
     - uses: actions/checkout@v5

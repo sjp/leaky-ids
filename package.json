@@ -21,7 +21,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.2.4",
     "@preact/preset-vite": "^2.10.2",
-    "sass-embedded": "^1.92.1",
+    "sass-embedded": "^1.93.0",
     "typescript": "^5.9.2",
     "vite": "^7.1.6",
     "vitest": "^3.2.4"

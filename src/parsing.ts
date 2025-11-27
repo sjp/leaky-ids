@@ -23,16 +23,10 @@ export const parseIntegerId = (input: string): ParseResult<number> => {
   }
 
   const num = Number.parseInt(input, 10);
-  if (!num) {
+  if (!Number.isInteger(num) || Number.isNaN(num)) {
     return IntegerParseFailure;
   }
 
-  const isInt = Number.isInteger(Number.parseFloat(input));
-  if (!isInt) {
-    return IntegerParseFailure;
-  }
-
-  // consider 1 to be the natural starting point for sequential ids
   if (num < 1) {
     return IntegerParseFailure;
   }

@@ -1,11 +1,11 @@
 import { Timestamp } from "./timestamp";
 
-export interface UlidIdProps {
+export interface KsuidIdProps {
   id: string;
   timestamp: Date;
 }
 
-export const UlidId = ({ id, timestamp }: UlidIdProps) => {
+export const KsuidId = ({ id, timestamp }: KsuidIdProps) => {
   return (
     <article>
       <header>
@@ -14,13 +14,14 @@ export const UlidId = ({ id, timestamp }: UlidIdProps) => {
       <p>
         Your ID <code>{id}</code> is a valid{" "}
         <a
-          href="https://github.com/ulid/spec"
+          href="https://github.com/segmentio/ksuid"
           target="_blank"
           rel="noopener noreferrer"
         >
-          ULID
-        </a>
-        . This means we can determine when it was created.
+          KSUID
+        </a>{" "}
+        (K-Sortable Unique Identifier). This means we can determine when it was
+        created.
       </p>
       <Timestamp timestamp={timestamp} />
       <p>

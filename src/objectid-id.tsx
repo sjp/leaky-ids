@@ -1,11 +1,11 @@
 import { Timestamp } from "./timestamp";
 
-export interface UlidIdProps {
+export interface ObjectIdProps {
   id: string;
   timestamp: Date;
 }
 
-export const UlidId = ({ id, timestamp }: UlidIdProps) => {
+export const ObjectId = ({ id, timestamp }: ObjectIdProps) => {
   return (
     <article>
       <header>
@@ -14,11 +14,11 @@ export const UlidId = ({ id, timestamp }: UlidIdProps) => {
       <p>
         Your ID <code>{id}</code> is a valid{" "}
         <a
-          href="https://github.com/ulid/spec"
+          href="https://www.mongodb.com/docs/manual/reference/method/ObjectId/"
           target="_blank"
           rel="noopener noreferrer"
         >
-          ULID
+          MongoDB ObjectId
         </a>
         . This means we can determine when it was created.
       </p>

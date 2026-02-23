@@ -14,12 +14,12 @@
   "dependencies": {
     "@picocss/pico": "^2.1.1",
     "@theme-toggles/react": "^4.1.0",
-    "preact": "^10.28.3",
+    "preact": "^10.28.4",
     "preact-iso": "^2.11.1",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.0",
+    "@biomejs/biome": "^2.4.4",
     "@preact/preset-vite": "^2.10.3",
     "sass-embedded": "^1.97.3",
     "typescript": "^5.9.3",

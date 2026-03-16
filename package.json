@@ -14,16 +14,16 @@
   "dependencies": {
     "@picocss/pico": "^2.1.1",
     "@theme-toggles/react": "^4.1.0",
-    "preact": "^10.28.4",
+    "preact": "^10.29.0",
     "preact-iso": "^2.11.1",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.6",
-    "@preact/preset-vite": "^2.10.3",
-    "sass-embedded": "^1.97.3",
+    "@biomejs/biome": "^2.4.7",
+    "@preact/preset-vite": "^2.10.4",
+    "sass-embedded": "^1.98.0",
     "typescript": "^5.9.3",
-    "vite": "^7.3.1",
-    "vitest": "^4.0.18"
+    "vite": "^8.0.0",
+    "vitest": "^4.1.0"
   }
 }

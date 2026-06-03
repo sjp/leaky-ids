@@ -190,9 +190,9 @@ test("parseSnowflakeId - parses Instagram ID", () => {
 });
 
 test("parseSnowflakeId - parses Mastodon ID", () => {
-  // Mastodon uses snowflakes starting from Jan 1, 2017
-  // An ID from late 2022 would be around 109000000000000000
-  const mastodonId = "109300000000000000";
+  // Mastodon uses snowflakes starting from Jan 1, 2017.
+  // This ID decodes to 2021-01-01 under the Mastodon epoch.
+  const mastodonId = "529448671641601234";
   const result = parseSnowflakeId(mastodonId);
   expect(result).toBeTruthy();
   expect(result?.id).toBe(mastodonId);
@@ -210,6 +210,15 @@ test("parseSnowflakeId - correctly identifies Discord ID", () => {
   // Verify the timestamp when using Discord epoch
   const timestamp = getSnowflakeTimestamp(discordId, "discord");
   expect(timestamp?.getFullYear()).toBe(2017);
+});
+
+test.each([
+  "100000000000000", // 15 digits -> decodes within days of every epoch
+  "999999999999999",
+  "9999999999999999", // 16 digits -> within weeks
+])("parseSnowflakeId - near-epoch numbers are not snowflakes: '%s'", (input) => {
+  const result = parseSnowflakeId(input);
+  expect(result).toBeNull();
 });
 
 // KSUID tests

@@ -183,6 +183,10 @@ export interface SnowflakeIdResult {
   platforms: SnowflakePlatform[];
 }
 
+// Reject decoded dates within this window of a platform epoch. Real platform IDs
+// post-date their epoch by years; near-epoch matches are almost always coincidental.
+const SNOWFLAKE_MIN_AGE_MS = 365 * 86400000; // ~1 year
+
 export const parseSnowflakeId = (input: string): SnowflakeIdResult | null => {
   if (!input || !SNOWFLAKE_REGEX.test(input)) {
     return null;
@@ -191,15 +195,23 @@ export const parseSnowflakeId = (input: string): SnowflakeIdResult | null => {
   const snowflake = BigInt(input);
   const extractedTimestamp = Number(snowflake >> 22n);
 
-  const now = Date.now();
-  const oneDayFuture = now + 86400000;
+  // A zero (or smaller) offset carries no timestamp signal: the decoded date
+  // would land exactly on a platform epoch, which no real ID does.
+  if (extractedTimestamp <= 0) {
+    return null;
+  }
 
-  // Check which platforms give valid timestamps
+  const oneDayFuture = Date.now() + 86400000;
+
+  // Check which platforms give a plausible creation date: comfortably after the
+  // platform epoch and not in the future. The minimum-age floor rules out short
+  // numeric strings whose decoded date lands within days of an epoch (those are
+  // far more likely to be plain auto-incrementing integers than real IDs).
   const validPlatforms: SnowflakePlatform[] = [];
 
   for (const [platform, config] of Object.entries(SNOWFLAKE_EPOCHS)) {
     const timestamp = extractedTimestamp + config.epoch;
-    if (timestamp >= config.epoch && timestamp < oneDayFuture) {
+    if (timestamp >= config.epoch + SNOWFLAKE_MIN_AGE_MS && timestamp < oneDayFuture) {
       validPlatforms.push(platform as SnowflakePlatform);
     }
   }

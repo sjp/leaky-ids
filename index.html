@@ -7,6 +7,18 @@
     <meta name="color-scheme" content="dark light" />
     <meta name="format-detection" content="telephone=no" />
     <title>Is my ID leaky?</title>
+    <script>
+      // Apply the system theme before first paint so the document matches the
+      // user's preference immediately, instead of flashing once hydration runs
+      // the effect that sets data-theme. Falls back to Pico's prefers-color-scheme
+      // media query if this script does not run (e.g. JS disabled).
+      (function () {
+        try {
+          var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          document.documentElement.dataset.theme = prefersDark ? "dark" : "light";
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="app"></div>

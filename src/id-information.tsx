@@ -43,7 +43,15 @@ export const IdInformation = ({ id }: IdProps) => {
 
   const snowflakeParseResult = parseSnowflakeId(id);
   if (snowflakeParseResult) {
-    return <SnowflakeId id={snowflakeParseResult.id} platforms={snowflakeParseResult.platforms} />;
+    // key by id so switching to a different snowflake remounts the component and
+    // resets the selected-platform state (which is initialized from platforms[0]).
+    return (
+      <SnowflakeId
+        key={snowflakeParseResult.id}
+        id={snowflakeParseResult.id}
+        platforms={snowflakeParseResult.platforms}
+      />
+    );
   }
 
   const objectIdParseResult = parseObjectId(id);

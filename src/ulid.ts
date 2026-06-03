@@ -23,7 +23,7 @@ export const decodeTime = (id: string): number => {
     throw createError("malformed ulid");
   }
   const time = id
-    .substr(0, TIME_LEN)
+    .substring(0, TIME_LEN)
     .split("")
     .reverse()
     .reduce((carry, char, index) => {

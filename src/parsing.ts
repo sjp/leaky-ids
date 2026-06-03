@@ -18,7 +18,7 @@ export const parseIntegerId = (input: string): ParseResult<number> => {
     return IntegerParseFailure;
   }
 
-  if (!input.match(ASCII_NUMERIC_CHARS_ONLY)) {
+  if (!ASCII_NUMERIC_CHARS_ONLY.test(input)) {
     return IntegerParseFailure;
   }
 

@@ -53,7 +53,7 @@ export const parseUlidId = (input: string): TimeBasedId | null => {
   }
 
   const timestamp = getTimestampFromUlid(input.toUpperCase());
-  if (!timestamp) {
+  if (timestamp === null) {
     return null;
   }
 
@@ -94,7 +94,7 @@ export const parseUuidV7Id = (input: string): TimeBasedId | null => {
   const normalizedUuid = normalizeUuid(input);
 
   const timestamp = getTimestampFromUuidV7(normalizedUuid);
-  if (!timestamp) {
+  if (timestamp === null) {
     return null;
   }
 
@@ -136,7 +136,7 @@ export const parseUuidV1Id = (input: string): TimeBasedId | null => {
   const normalizedUuid = normalizeUuid(input);
   const timestamp = getTimestampFromUuidV1(normalizedUuid);
 
-  if (!timestamp || timestamp < 0) {
+  if (timestamp === null || timestamp < 0) {
     return null;
   }
 

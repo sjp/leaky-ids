@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from "preact/hooks";
 import { Timestamp } from "./timestamp";
 import { SNOWFLAKE_EPOCHS, getSnowflakeTimestamp, type SnowflakePlatform } from "./parsing";
 
@@ -31,7 +31,7 @@ export const SnowflakeId = ({ id, platforms }: SnowflakeIdProps) => {
 
       {platforms.length > 1 && (
         <div style={{ marginBottom: "1rem" }}>
-          <label htmlFor="platform-select">
+          <label for="platform-select">
             <strong>Select platform:</strong>
           </label>
           <select

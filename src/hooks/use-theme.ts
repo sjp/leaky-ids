@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
+import { useEffect, useLayoutEffect, useState } from "preact/hooks";
 
 export type Theme = "light" | "dark";
 
@@ -61,9 +61,6 @@ const useSystemDarkModePreference = (): Theme => {
 };
 
 export const useTheme = () => {
-  const rootElement = typeof window !== "undefined" ? document.querySelector("html") : null;
-
-  const htmlRef = useRef(rootElement);
   const systemTheme = useSystemDarkModePreference();
 
   const [theme, setTheme] = useState(systemTheme);
@@ -72,12 +69,10 @@ export const useTheme = () => {
     setTheme(systemTheme);
   }, [systemTheme]);
 
+  // Effects only run on the client, so document.documentElement (the <html>
+  // element) is always available here -- no ref or query needed.
   useEffect(() => {
-    if (!htmlRef.current) {
-      return;
-    }
-
-    htmlRef.current.dataset.theme = theme;
+    document.documentElement.dataset.theme = theme;
   }, [theme]);
 
   return {

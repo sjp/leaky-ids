@@ -243,6 +243,7 @@ test.each([
   "123",
   "0ujtsYcgvSTl8PAuAdqWYSMnLOv!", // invalid char
   "0ujtsYcgvSTl8PAuAdqWYSMnLO", // too short
+  "zzzzzzzzzzzzzzzzzzzzzzzzzzz", // 27 base62 chars but decodes past 2^160 (overflow)
 ])("parseKsuidId - invalid values return null: '%s'", (input) => {
   const result = parseKsuidId(input);
   expect(result).toBeNull();

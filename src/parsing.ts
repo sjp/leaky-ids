@@ -262,16 +262,22 @@ export const parseKsuidId = (input: string): TimeBasedId | null => {
   }
 
   const decoded = base62Decode(input);
-  if (!decoded) {
+  if (decoded === null) {
     return null;
   }
 
-  // Extract first 32 bits (4 bytes) for timestamp
+  // A KSUID is a 160-bit value, but 27 base62 chars can encode slightly more
+  // than 2^160; anything past that range is malformed, not a real KSUID.
+  if (decoded >= 1n << 160n) {
+    return null;
+  }
+
+  // Extract the high 32 bits (first 4 bytes) for the timestamp. By construction
+  // this is >= the KSUID epoch (May 2014), so only the future bound needs checking.
   const timestampSeconds = Number(decoded >> 128n);
   const timestampMs = (timestampSeconds + KSUID_EPOCH) * 1000;
 
-  // Validate timestamp is reasonable
-  if (timestampMs < KSUID_EPOCH * 1000 || timestampMs > Date.now() + 86400000) {
+  if (timestampMs > Date.now() + 86400000) {
     return null;
   }
 

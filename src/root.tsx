@@ -18,9 +18,8 @@ export const Root = () => {
               <h1 style={{ textAlign: "center" }}>Is my ID leaky?</h1>
             </header>
             <p>
-              Check to see whether the identifier you use in your application
-              can leak information to competitors, customers, or malicious
-              adversaries.
+              Check to see whether the identifier you use in your application can leak information
+              to competitors, customers, or malicious adversaries.
             </p>
           </article>
         </section>

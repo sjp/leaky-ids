@@ -71,11 +71,7 @@ export const Classic = ({
           <clipPath id={`${idPrefix || ""}a`}>
             <path d="M0 0h25a1 1 0 0 0 10 10v14H0Z" />
           </clipPath>
-          <g
-            stroke="currentColor"
-            strokeLinecap="round"
-            clipPath={`url(#${idPrefix || ""}a)`}
-          >
+          <g stroke="currentColor" strokeLinecap="round" clipPath={`url(#${idPrefix || ""}a)`}>
             <circle cx={12} cy={12} r={5} />
             <path
               fill="none"

@@ -24,8 +24,8 @@ export const UuidV7Id = ({ id, timestamp }: UuidV7IdProps) => {
       </p>
       <Timestamp timestamp={timestamp} />
       <p>
-        In most cases knowing the creation date is not sensitive information.
-        However, if that information is sensitive you may wish to hide it.
+        In most cases knowing the creation date is not sensitive information. However, if that
+        information is sensitive you may wish to hide it.
       </p>
     </article>
   );

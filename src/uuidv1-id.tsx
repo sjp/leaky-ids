@@ -24,10 +24,9 @@ export const UuidV1Id = ({ id, timestamp }: UuidV1IdProps) => {
       </p>
       <Timestamp timestamp={timestamp} />
       <p>
-        In most cases knowing the creation date is not sensitive information.
-        However, if that information is sensitive you may wish to hide it. Note
-        that UUIDv1 also contains MAC address information which may reveal the
-        machine that generated it.
+        In most cases knowing the creation date is not sensitive information. However, if that
+        information is sensitive you may wish to hide it. Note that UUIDv1 also contains MAC address
+        information which may reveal the machine that generated it.
       </p>
     </article>
   );

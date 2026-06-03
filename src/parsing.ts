@@ -115,16 +115,16 @@ const getTimestampFromUuidV1 = (input: string): number | null => {
   const timeLow = hex.substring(0, 8);
   const timeMid = hex.substring(8, 12);
   const timeHi = hex.substring(12, 16);
-  
+
   // Extract the 60-bit timestamp (remove version bits)
   const timeHiFiltered = (Number.parseInt(timeHi, 16) & 0x0fff).toString(16).padStart(4, "0");
   const timestampHex = timeHiFiltered + timeMid + timeLow;
   const timestamp100ns = BigInt(`0x${timestampHex}`);
-  
+
   // Convert to milliseconds and adjust for epoch difference
   const GREGORIAN_EPOCH_OFFSET = 122192928000000000n; // Oct 15, 1582 to Jan 1, 1970 in 100ns units
   const timestampMs = Number((timestamp100ns - GREGORIAN_EPOCH_OFFSET) / 10000n);
-  
+
   return timestampMs;
 };
 
@@ -135,7 +135,7 @@ export const parseUuidV1Id = (input: string): TimeBasedId | null => {
 
   const normalizedUuid = normalizeUuid(input);
   const timestamp = getTimestampFromUuidV1(normalizedUuid);
-  
+
   if (!timestamp || timestamp < 0) {
     return null;
   }
@@ -190,39 +190,36 @@ export const parseSnowflakeId = (input: string): SnowflakeIdResult | null => {
 
   const snowflake = BigInt(input);
   const extractedTimestamp = Number(snowflake >> 22n);
-  
+
   const now = Date.now();
   const oneDayFuture = now + 86400000;
-  
+
   // Check which platforms give valid timestamps
   const validPlatforms: SnowflakePlatform[] = [];
-  
+
   for (const [platform, config] of Object.entries(SNOWFLAKE_EPOCHS)) {
     const timestamp = extractedTimestamp + config.epoch;
     if (timestamp >= config.epoch && timestamp < oneDayFuture) {
       validPlatforms.push(platform as SnowflakePlatform);
     }
   }
-  
+
   if (validPlatforms.length === 0) {
     return null;
   }
-  
+
   return { id: input, platforms: validPlatforms };
 };
 
-export const getSnowflakeTimestamp = (
-  input: string,
-  platform: SnowflakePlatform
-): Date | null => {
+export const getSnowflakeTimestamp = (input: string, platform: SnowflakePlatform): Date | null => {
   if (!input || !SNOWFLAKE_REGEX.test(input)) {
     return null;
   }
-  
+
   const snowflake = BigInt(input);
   const extractedTimestamp = Number(snowflake >> 22n);
   const epochConfig = SNOWFLAKE_EPOCHS[platform];
-  
+
   const timestamp = extractedTimestamp + epochConfig.epoch;
   return new Date(timestamp);
 };
@@ -260,7 +257,7 @@ export const parseKsuidId = (input: string): TimeBasedId | null => {
   // Extract first 32 bits (4 bytes) for timestamp
   const timestampSeconds = Number(decoded >> 128n);
   const timestampMs = (timestampSeconds + KSUID_EPOCH) * 1000;
-  
+
   // Validate timestamp is reasonable
   if (timestampMs < KSUID_EPOCH * 1000 || timestampMs > Date.now() + 86400000) {
     return null;

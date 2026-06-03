@@ -13,19 +13,15 @@ export const UlidId = ({ id, timestamp }: UlidIdProps) => {
       </header>
       <p>
         Your ID <code>{id}</code> is a valid{" "}
-        <a
-          href="https://github.com/ulid/spec"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href="https://github.com/ulid/spec" target="_blank" rel="noopener noreferrer">
           ULID
         </a>
         . This means we can determine when it was created.
       </p>
       <Timestamp timestamp={timestamp} />
       <p>
-        In most cases knowing the creation date is not sensitive information.
-        However, if that information is sensitive you may wish to hide it.
+        In most cases knowing the creation date is not sensitive information. However, if that
+        information is sensitive you may wish to hide it.
       </p>
     </article>
   );

@@ -5,13 +5,12 @@ permissions:
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -19,15 +18,15 @@ jobs:
         node-version: [22.x, 23.x, 24.x, latest]
 
     steps:
-    - uses: actions/checkout@v6
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v6
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm ci
-    - run: npm run lint
-    - run: npm run build
-    - run: npm run test
+      - uses: actions/checkout@v6
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      - run: npm run test
 
   deploy:
     if: github.ref == 'refs/heads/master'
@@ -44,11 +43,11 @@ jobs:
 
       - run: npm ci
       - run: npm run build
-        
+
       - name: Deploy
         uses: easingthemes/ssh-deploy@v6.0.3
         with:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }} 
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
           REMOTE_HOST: ${{ secrets.SSH_HOST }}
           REMOTE_USER: ${{ secrets.SSH_USER }}
           TARGET: ${{ secrets.REMOTE_DIR }}

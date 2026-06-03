@@ -6,7 +6,7 @@ const getMatches = (query: string): boolean => {
   if (typeof window === "undefined") {
     return false;
   }
-    
+
   return window.matchMedia(query).matches;
 };
 
@@ -17,10 +17,7 @@ type UseMediaQueryOptions = {
 
 export function useMediaQuery(
   query: string,
-  {
-    defaultValue = false,
-    initializeWithValue = true,
-  }: UseMediaQueryOptions = {}
+  { defaultValue = false, initializeWithValue = true }: UseMediaQueryOptions = {},
 ): boolean {
   const [matches, setMatches] = useState<boolean>(() => {
     if (initializeWithValue) {
@@ -64,8 +61,7 @@ const useSystemDarkModePreference = (): Theme => {
 };
 
 export const useTheme = () => {
-  const rootElement =
-    typeof window !== "undefined" ? document.querySelector("html") : null;
+  const rootElement = typeof window !== "undefined" ? document.querySelector("html") : null;
 
   const htmlRef = useRef(rootElement);
   const systemTheme = useSystemDarkModePreference();

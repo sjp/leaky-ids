@@ -1,4 +1,4 @@
-import { expect, test } from "vitest";
+import { expect, test } from "vite-plus/test";
 import {
   parseIntegerId,
   parseUlidId,
@@ -22,14 +22,11 @@ test("parseIntegerId - parses large integer", () => {
   expect(result.result).toBe(Number.MAX_SAFE_INTEGER);
 });
 
-test.each(["", "  "])(
-  "parseIntegerId - handles empty input: '%s'",
-  (input) => {
-    const result = parseIntegerId(input);
-    expect(result.success).toBeFalsy();
-    expect(result.result).toBeNull();
-  }
-);
+test.each(["", "  "])("parseIntegerId - handles empty input: '%s'", (input) => {
+  const result = parseIntegerId(input);
+  expect(result.success).toBeFalsy();
+  expect(result.result).toBeNull();
+});
 
 test.each(["a", "b", "NaN", "1.3", "12,345"])(
   "parseIntegerId - non-integer values return false: '%s'",
@@ -37,7 +34,7 @@ test.each(["a", "b", "NaN", "1.3", "12,345"])(
     const result = parseIntegerId(input);
     expect(result.success).toBeFalsy();
     expect(result.result).toBeNull();
-  }
+  },
 );
 
 test.each(["0", "-1", "-9999", "-90238490432849034890"])(
@@ -46,7 +43,7 @@ test.each(["0", "-1", "-9999", "-90238490432849034890"])(
     const result = parseIntegerId(input);
     expect(result.success).toBeFalsy();
     expect(result.result).toBeNull();
-  }
+  },
 );
 
 test.each([
@@ -72,20 +69,17 @@ test("parseUlidId - parses ULID timestamp", () => {
   expect(result?.timestamp?.toISOString()).toBe("2025-03-07T03:06:47.391Z");
 });
 
-test.each(["", "  "])(
-  "parseUlidId - handles empty input: '%s'",
-  (input) => {
-    const result = parseUlidId(input);
-    expect(result).toBeNull();
-  }
-);
+test.each(["", "  "])("parseUlidId - handles empty input: '%s'", (input) => {
+  const result = parseUlidId(input);
+  expect(result).toBeNull();
+});
 
 test.each(["a", "b", "-01JNQ954H97KBKW8A65RVR1N89", "not-a-ulid"])(
   "parseUlidId - non-ULID values return null: '%s'",
   (input) => {
     const result = parseUlidId(input);
     expect(result).toBeNull();
-  }
+  },
 );
 
 test.each([
@@ -115,13 +109,10 @@ test("parseUuidV7Id - parses v7 UUID timestamp", () => {
   expect(result?.timestamp?.toISOString()).toBe("2025-03-07T03:14:04.016Z");
 });
 
-test.each(["", "  "])(
-  "parseUuidV7Id - handles empty input: '%s'",
-  (input) => {
-    const result = parseUuidV7Id(input);
-    expect(result).toBeFalsy();
-  }
-);
+test.each(["", "  "])("parseUuidV7Id - handles empty input: '%s'", (input) => {
+  const result = parseUuidV7Id(input);
+  expect(result).toBeFalsy();
+});
 
 test.each([
   "a",
@@ -147,13 +138,10 @@ test.each([
   expect(result?.timestamp).toBeTruthy();
 });
 
-test.each(["", "  "])(
-  "parseUuidV1Id - handles empty input: '%s'",
-  (input) => {
-    const result = parseUuidV1Id(input);
-    expect(result).toBeNull();
-  }
-);
+test.each(["", "  "])("parseUuidV1Id - handles empty input: '%s'", (input) => {
+  const result = parseUuidV1Id(input);
+  expect(result).toBeNull();
+});
 
 test.each([
   "not-a-uuid",
@@ -177,13 +165,10 @@ test.each([
   expect(result?.platforms.length).toBeGreaterThan(0);
 });
 
-test.each(["", "  "])(
-  "parseSnowflakeId - handles empty input: '%s'",
-  (input) => {
-    const result = parseSnowflakeId(input);
-    expect(result).toBeNull();
-  }
-);
+test.each(["", "  "])("parseSnowflakeId - handles empty input: '%s'", (input) => {
+  const result = parseSnowflakeId(input);
+  expect(result).toBeNull();
+});
 
 test.each([
   "not-a-snowflake",
@@ -221,7 +206,7 @@ test("parseSnowflakeId - correctly identifies Discord ID", () => {
   expect(result).toBeTruthy();
   expect(result?.id).toBe(discordId);
   expect(result?.platforms).toContain("discord");
-  
+
   // Verify the timestamp when using Discord epoch
   const timestamp = getSnowflakeTimestamp(discordId, "discord");
   expect(timestamp?.getFullYear()).toBe(2017);
@@ -267,13 +252,10 @@ test.each([
   expect(result?.timestamp).toBeTruthy();
 });
 
-test.each(["", "  "])(
-  "parseObjectId - handles empty input: '%s'",
-  (input) => {
-    const result = parseObjectId(input);
-    expect(result).toBeNull();
-  }
-);
+test.each(["", "  "])("parseObjectId - handles empty input: '%s'", (input) => {
+  const result = parseObjectId(input);
+  expect(result).toBeNull();
+});
 
 test.each([
   "not-an-objectid",

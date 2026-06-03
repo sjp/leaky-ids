@@ -9,7 +9,7 @@ export const Header = () => {
     (toggled: boolean) => {
       setTheme(toggled ? "dark" : "light");
     },
-    [setTheme]
+    [setTheme],
   );
 
   return (
@@ -21,9 +21,7 @@ export const Header = () => {
           alignItems: "center",
         }}
       >
-        <strong
-          style={{ marginBottom: "var(--pico-spacing)", textWrap: "nowrap" }}
-        >
+        <strong style={{ marginBottom: "var(--pico-spacing)", textWrap: "nowrap" }}>
           Is my ID leaky?
         </strong>
         <div

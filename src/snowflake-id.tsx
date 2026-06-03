@@ -1,10 +1,6 @@
 import { useState } from "react";
 import { Timestamp } from "./timestamp";
-import {
-  SNOWFLAKE_EPOCHS,
-  getSnowflakeTimestamp,
-  type SnowflakePlatform,
-} from "./parsing";
+import { SNOWFLAKE_EPOCHS, getSnowflakeTimestamp, type SnowflakePlatform } from "./parsing";
 
 export interface SnowflakeIdProps {
   id: string;
@@ -12,9 +8,7 @@ export interface SnowflakeIdProps {
 }
 
 export const SnowflakeId = ({ id, platforms }: SnowflakeIdProps) => {
-  const [selectedPlatform, setSelectedPlatform] = useState<SnowflakePlatform>(
-    platforms[0]
-  );
+  const [selectedPlatform, setSelectedPlatform] = useState<SnowflakePlatform>(platforms[0]);
 
   const timestamp = getSnowflakeTimestamp(id, selectedPlatform);
 
@@ -43,9 +37,7 @@ export const SnowflakeId = ({ id, platforms }: SnowflakeIdProps) => {
           <select
             id="platform-select"
             value={selectedPlatform}
-            onChange={(e) =>
-              setSelectedPlatform(e.currentTarget.value as SnowflakePlatform)
-            }
+            onChange={(e) => setSelectedPlatform(e.currentTarget.value as SnowflakePlatform)}
             style={{
               marginLeft: "0.5rem",
               padding: "0.25rem 0.5rem",
@@ -70,10 +62,9 @@ export const SnowflakeId = ({ id, platforms }: SnowflakeIdProps) => {
       {timestamp && <Timestamp timestamp={timestamp} />}
 
       <p>
-        In most cases knowing the creation date is not sensitive information.
-        However, if that information is sensitive you may wish to hide it.
-        Snowflake IDs are commonly used by Twitter, Discord, Instagram,
-        Mastodon, and other high-scale systems.
+        In most cases knowing the creation date is not sensitive information. However, if that
+        information is sensitive you may wish to hide it. Snowflake IDs are commonly used by
+        Twitter, Discord, Instagram, Mastodon, and other high-scale systems.
       </p>
     </article>
   );

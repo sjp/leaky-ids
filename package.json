@@ -21,7 +21,7 @@
   "devDependencies": {
     "@preact/preset-vite": "^2.10.5",
     "sass-embedded": "^1.100.0",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "vite-plus": "0.2.2"
   },
   "overrides": {

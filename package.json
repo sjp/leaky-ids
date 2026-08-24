@@ -16,12 +16,12 @@
     "@theme-toggles/react": "^4.1.0",
     "preact": "^10.29.8",
     "preact-iso": "^2.12.2",
-    "uuid": "^14.0.1"
+    "uuid": "^14.0.2"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.10.6",
     "preact-render-to-string": "^6.6.1",
-    "sass-embedded": "^1.102.0",
+    "sass-embedded": "^1.103.1",
     "typescript": "^7.0.2",
     "vite-plus": "0.2.9"
   },

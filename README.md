@@ -15,9 +15,16 @@ A small web application, intended to determine whether identifiers used in an ap
 ## Features
 
 - Dark mode
-- ULID identifiers detected and parsed
-- UUID v7 identifiers similarly
-- Auto-incrementing integers also handled.
+- Detects and decodes the following identifier formats:
+  - UUID v7 (creation time)
+  - UUID v1 (creation time, node/MAC address, clock sequence)
+  - ULID (creation time)
+  - KSUID (creation time)
+  - MongoDB ObjectId (creation time)
+  - Snowflake IDs for Twitter, Discord, Instagram and Mastodon (creation time, per-platform layouts)
+  - Auto-incrementing integers (record counts, enumeration)
+- Shows every plausible interpretation when an ID matches more than one format
+- Explains what the tool cannot detect when no pattern is found
 
 ## Tools and Libraries
 

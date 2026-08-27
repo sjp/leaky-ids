@@ -13,10 +13,8 @@
   },
   "dependencies": {
     "@picocss/pico": "^2.1.1",
-    "@theme-toggles/react": "^4.1.0",
     "preact": "^10.29.8",
-    "preact-iso": "^2.12.2",
-    "uuid": "^14.0.2"
+    "preact-iso": "^2.12.2"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.10.6",

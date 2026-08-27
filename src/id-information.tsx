@@ -55,7 +55,7 @@ const INTERPRETATIONS: Array<(id: string) => ComponentChild | null> = [
     const r = parseSnowflakeId(id);
     // key by id so switching to a different snowflake remounts the component and
     // resets the selected-platform state (which is initialized from platforms[0]).
-    return r && <SnowflakeId key={`snowflake-${r.id}`} id={r.id} platforms={r.platforms} />;
+    return r && <SnowflakeId key={`snowflake-${r.id}`} id={r.id} candidates={r.candidates} />;
   },
   (id) => {
     const r = parseObjectId(id);
@@ -63,7 +63,7 @@ const INTERPRETATIONS: Array<(id: string) => ComponentChild | null> = [
   },
   (id) => {
     const r = parseIntegerId(id);
-    return r.success && r.result !== null && <IntegerId key="integer" id={r.result} />;
+    return r && <IntegerId key="integer" id={r.id} />;
   },
 ];
 

@@ -28,8 +28,8 @@ export const IntegerId = ({ id }: IntegerIdProps) => {
       </p>
       <p>
         Malicious users may also use this information to perform an &ldquo;enumeration
-        attack&rdquo;, by browsing to pages like <code>/user/{exampleIncrementingIds[0]}</code>
-        and incrementing to <code>/user/{exampleIncrementingIds[1]}</code>,{" "}
+        attack&rdquo;, by browsing to pages like <code>/user/{exampleIncrementingIds[0]}</code> and
+        incrementing to <code>/user/{exampleIncrementingIds[1]}</code>,{" "}
         <code>/user/{exampleIncrementingIds[2]}</code> and so on. If a web application is not
         adequately secured this can leak further information.
       </p>

@@ -7,49 +7,39 @@ import {
   parseSnowflakeId,
   parseKsuidId,
   parseObjectId,
-  getSnowflakeTimestamp,
 } from "../parsing";
 
 test("parseIntegerId - parses basic integer", () => {
-  const result = parseIntegerId("123");
-  expect(result.success).toBeTruthy();
-  expect(result.result).toBe(123n);
+  expect(parseIntegerId("123")).toEqual({ id: 123n });
 });
 
 test("parseIntegerId - parses large integer", () => {
-  const result = parseIntegerId(Number.MAX_SAFE_INTEGER.toString());
-  expect(result.success).toBeTruthy();
-  expect(result.result).toBe(BigInt(Number.MAX_SAFE_INTEGER));
+  expect(parseIntegerId(Number.MAX_SAFE_INTEGER.toString())).toEqual({
+    id: BigInt(Number.MAX_SAFE_INTEGER),
+  });
 });
 
 test("parseIntegerId - preserves integers beyond Number.MAX_SAFE_INTEGER exactly", () => {
   const result = parseIntegerId("99999999999999999999999");
-  expect(result.success).toBeTruthy();
-  expect(result.result).toBe(99999999999999999999999n);
-  expect(result.result?.toString()).toBe("99999999999999999999999");
+  expect(result?.id).toBe(99999999999999999999999n);
+  expect(result?.id.toString()).toBe("99999999999999999999999");
 });
 
 test.each(["", "  "])("parseIntegerId - handles empty input: '%s'", (input) => {
-  const result = parseIntegerId(input);
-  expect(result.success).toBeFalsy();
-  expect(result.result).toBeNull();
+  expect(parseIntegerId(input)).toBeNull();
 });
 
 test.each(["a", "b", "NaN", "1.3", "12,345"])(
   "parseIntegerId - non-integer values return false: '%s'",
   (input) => {
-    const result = parseIntegerId(input);
-    expect(result.success).toBeFalsy();
-    expect(result.result).toBeNull();
+    expect(parseIntegerId(input)).toBeNull();
   },
 );
 
 test.each(["0", "-1", "-9999", "-90238490432849034890"])(
   "parseIntegerId - integers less than 1 return false: '%s'",
   (input) => {
-    const result = parseIntegerId(input);
-    expect(result.success).toBeFalsy();
-    expect(result.result).toBeNull();
+    expect(parseIntegerId(input)).toBeNull();
   },
 );
 
@@ -211,8 +201,7 @@ test.each([
   const result = parseSnowflakeId(snowflake);
   expect(result).toBeTruthy();
   expect(result?.id).toBe(snowflake);
-  expect(result?.platforms).toBeTruthy();
-  expect(result?.platforms.length).toBeGreaterThan(0);
+  expect(result?.candidates.length).toBeGreaterThan(0);
 });
 
 test.each(["", "  "])("parseSnowflakeId - handles empty input: '%s'", (input) => {
@@ -230,33 +219,23 @@ test.each([
   expect(result).toBeNull();
 });
 
+const candidateFor = (id: string, platform: string) =>
+  parseSnowflakeId(id)?.candidates.find((c) => c.platform === platform);
+
 test("parseSnowflakeId - parses Twitter ID timestamp", () => {
-  const twitterId = "175928847299117063";
-  expect(parseSnowflakeId(twitterId)?.platforms).toContain("twitter");
-  expect(getSnowflakeTimestamp(twitterId, "twitter")?.toISOString()).toBe(
-    "2012-03-03T13:01:20.453Z",
-  );
+  const candidate = candidateFor("175928847299117063", "twitter");
+  expect(candidate?.timestamp.toISOString()).toBe("2012-03-03T13:01:20.453Z");
 });
 
 test("parseSnowflakeId - parses Instagram ID (41 bit timestamp, 23 low bits)", () => {
-  const instagramId = "1234567890123456789";
-  const result = parseSnowflakeId(instagramId);
-  expect(result).toBeTruthy();
-  expect(result?.platforms).toContain("instagram");
-  expect(getSnowflakeTimestamp(instagramId, "instagram")?.toISOString()).toBe(
-    "2016-04-23T06:13:02.804Z",
-  );
+  const candidate = candidateFor("1234567890123456789", "instagram");
+  expect(candidate?.timestamp.toISOString()).toBe("2016-04-23T06:13:02.804Z");
 });
 
 test("parseSnowflakeId - parses Mastodon ID (48 bit unix timestamp, 16 low bits)", () => {
   // Mastodon status IDs from late 2022 are ~1.09e17
-  const mastodonId = "109000000000000000";
-  const result = parseSnowflakeId(mastodonId);
-  expect(result).toBeTruthy();
-  expect(result?.platforms).toContain("mastodon");
-  expect(getSnowflakeTimestamp(mastodonId, "mastodon")?.toISOString()).toBe(
-    "2022-09-15T02:13:27.812Z",
-  );
+  const candidate = candidateFor("109000000000000000", "mastodon");
+  expect(candidate?.timestamp.toISOString()).toBe("2022-09-15T02:13:27.812Z");
 });
 
 test("parseSnowflakeId - rejects IDs that pre-date every platform", () => {
@@ -267,15 +246,8 @@ test("parseSnowflakeId - rejects IDs that pre-date every platform", () => {
 
 test("parseSnowflakeId - correctly identifies Discord ID", () => {
   // This Discord ID would give 2012 if interpreted as Twitter (before Discord existed)
-  const discordId = "265206645645246464";
-  const result = parseSnowflakeId(discordId);
-  expect(result).toBeTruthy();
-  expect(result?.id).toBe(discordId);
-  expect(result?.platforms).toContain("discord");
-
-  // Verify the timestamp when using Discord epoch
-  const timestamp = getSnowflakeTimestamp(discordId, "discord");
-  expect(timestamp?.toISOString()).toBe("2017-01-01T19:56:31.623Z");
+  const candidate = candidateFor("265206645645246464", "discord");
+  expect(candidate?.timestamp.toISOString()).toBe("2017-01-01T19:56:31.623Z");
 });
 
 test.each([
@@ -297,6 +269,12 @@ test.each([
   expect(result).toBeTruthy();
   expect(result?.id).toBe(ksuid);
   expect(result?.timestamp).toBeTruthy();
+});
+
+test("parseKsuidId - parses KSUID timestamp", () => {
+  // Example from the segmentio/ksuid README
+  const result = parseKsuidId("0ujtsYcgvSTl8PAuAdqWYSMnLOv");
+  expect(result?.timestamp.toISOString()).toBe("2017-10-10T04:00:47.000Z");
 });
 
 test.each(["", "  "])("parseKsuidId - handles empty input: '%s'", (input) => {
@@ -326,6 +304,11 @@ test.each([
   expect(result).toBeTruthy();
   expect(result?.id).toBe(objectId);
   expect(result?.timestamp).toBeTruthy();
+});
+
+test("parseObjectId - parses ObjectId timestamp", () => {
+  const result = parseObjectId("507f1f77bcf86cd799439011");
+  expect(result?.timestamp.toISOString()).toBe("2012-10-17T21:13:27.000Z");
 });
 
 test.each(["", "  "])("parseObjectId - handles empty input: '%s'", (input) => {

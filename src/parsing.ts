@@ -1,35 +1,24 @@
 import { decodeTime } from "./ulid";
-import { version as uuidVersion, validate as uuidValidate } from "uuid";
-
-export interface ParseResult<T> {
-  success: boolean;
-  result: T | null;
-}
-
-const IntegerParseFailure: ParseResult<bigint> = {
-  success: false,
-  result: null,
-};
 
 const ASCII_NUMERIC_CHARS_ONLY = /^\d+$/;
 
+export interface IntegerIdResult {
+  id: bigint;
+}
+
 // Integers are parsed as BigInt so that IDs beyond Number.MAX_SAFE_INTEGER
 // (e.g. 64-bit database keys) are preserved exactly rather than rounded.
-export const parseIntegerId = (input: string): ParseResult<bigint> => {
-  if (!input) {
-    return IntegerParseFailure;
+export const parseIntegerId = (input: string): IntegerIdResult | null => {
+  if (!input || !ASCII_NUMERIC_CHARS_ONLY.test(input)) {
+    return null;
   }
 
-  if (!ASCII_NUMERIC_CHARS_ONLY.test(input)) {
-    return IntegerParseFailure;
+  const id = BigInt(input);
+  if (id < 1n) {
+    return null;
   }
 
-  const num = BigInt(input);
-  if (num < 1n) {
-    return IntegerParseFailure;
-  }
-
-  return { success: true, result: num };
+  return { id };
 };
 
 const ONE_DAY_MS = 86400000;
@@ -80,11 +69,18 @@ const normalizeUuid = (input: string): string => {
     : input;
 };
 
+// RFC 4122/9562 UUID: the version nibble leads the third group and the
+// variant bits (10xx) lead the fourth group.
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-([1-8])[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+// Returns the UUID version (1-8), or null if the input is not a valid UUID.
+const getUuidVersion = (input: string): number | null => {
+  const match = UUID_REGEX.exec(input);
+  return match ? Number.parseInt(match[1], 10) : null;
+};
+
 const getTimestampFromUuidV7 = (input: string): number | null => {
-  if (!uuidValidate(input)) {
-    return null;
-  }
-  if (uuidVersion(input) !== 7) {
+  if (getUuidVersion(input) !== 7) {
     return null;
   }
 
@@ -157,7 +153,7 @@ export const parseUuidV1Id = (input: string): UuidV1Result | null => {
   }
 
   const normalizedUuid = normalizeUuid(input);
-  if (!uuidValidate(normalizedUuid) || uuidVersion(normalizedUuid) !== 1) {
+  if (getUuidVersion(normalizedUuid) !== 1) {
     return null;
   }
 
@@ -232,53 +228,49 @@ export const SNOWFLAKE_EPOCHS: Record<SnowflakePlatform, SnowflakeEpoch> = {
 
 export interface SnowflakeIdResult {
   id: string;
-  platforms: SnowflakePlatform[];
+  // Every platform under whose layout this ID decodes to a plausible date,
+  // paired with that date. Ordered as SNOWFLAKE_EPOCHS.
+  candidates: SnowflakeCandidate[];
 }
 
-const decodeSnowflakeTimestamp = (input: string, config: SnowflakeEpoch): number | null => {
-  const extracted = Number(BigInt(input) >> BigInt(config.shift));
-
-  // A zero offset carries no timestamp signal: the decoded date would land
-  // exactly on the platform epoch, which no real ID does.
-  if (extracted <= 0) {
-    return null;
-  }
-
-  return extracted + config.epoch;
-};
+export interface SnowflakeCandidate {
+  platform: SnowflakePlatform;
+  timestamp: Date;
+}
 
 export const parseSnowflakeId = (input: string): SnowflakeIdResult | null => {
   if (!input || !SNOWFLAKE_REGEX.test(input)) {
     return null;
   }
 
+  const snowflake = BigInt(input);
+
   // Check which platforms give a plausible creation date: after the platform
   // existed and not in the future. The notBefore floor rules out short numeric
   // strings whose decoded date lands near an epoch (those are far more likely
   // to be plain auto-incrementing integers than real IDs).
-  const validPlatforms: SnowflakePlatform[] = [];
+  const candidates: SnowflakeCandidate[] = [];
 
   for (const config of Object.values(SNOWFLAKE_EPOCHS)) {
-    const timestamp = decodeSnowflakeTimestamp(input, config);
-    if (timestamp !== null && timestamp >= config.notBefore && isPlausibleTimestamp(timestamp)) {
-      validPlatforms.push(config.platform);
+    const extracted = Number(snowflake >> BigInt(config.shift));
+
+    // A zero offset carries no timestamp signal: the decoded date would land
+    // exactly on the platform epoch, which no real ID does.
+    if (extracted <= 0) {
+      continue;
+    }
+
+    const timestamp = extracted + config.epoch;
+    if (timestamp >= config.notBefore && isPlausibleTimestamp(timestamp)) {
+      candidates.push({ platform: config.platform, timestamp: new Date(timestamp) });
     }
   }
 
-  if (validPlatforms.length === 0) {
+  if (candidates.length === 0) {
     return null;
   }
 
-  return { id: input, platforms: validPlatforms };
-};
-
-export const getSnowflakeTimestamp = (input: string, platform: SnowflakePlatform): Date | null => {
-  if (!input || !SNOWFLAKE_REGEX.test(input)) {
-    return null;
-  }
-
-  const timestamp = decodeSnowflakeTimestamp(input, SNOWFLAKE_EPOCHS[platform]);
-  return timestamp === null ? null : new Date(timestamp);
+  return { id: input, candidates };
 };
 
 // KSUID parsing (K-Sortable Unique Identifier)

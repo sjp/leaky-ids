@@ -13,13 +13,20 @@ import {
 test("parseIntegerId - parses basic integer", () => {
   const result = parseIntegerId("123");
   expect(result.success).toBeTruthy();
-  expect(result.result).toBe(123);
+  expect(result.result).toBe(123n);
 });
 
 test("parseIntegerId - parses large integer", () => {
   const result = parseIntegerId(Number.MAX_SAFE_INTEGER.toString());
   expect(result.success).toBeTruthy();
-  expect(result.result).toBe(Number.MAX_SAFE_INTEGER);
+  expect(result.result).toBe(BigInt(Number.MAX_SAFE_INTEGER));
+});
+
+test("parseIntegerId - preserves integers beyond Number.MAX_SAFE_INTEGER exactly", () => {
+  const result = parseIntegerId("99999999999999999999999");
+  expect(result.success).toBeTruthy();
+  expect(result.result).toBe(99999999999999999999999n);
+  expect(result.result?.toString()).toBe("99999999999999999999999");
 });
 
 test.each(["", "  "])("parseIntegerId - handles empty input: '%s'", (input) => {
@@ -75,6 +82,11 @@ test("parseUlidId - accepts the epoch (timestamp 0) ULID", () => {
   expect(result?.timestamp?.toISOString()).toBe("1970-01-01T00:00:00.000Z");
 });
 
+test("parseUlidId - rejects ULIDs with a timestamp in the future", () => {
+  // "7ZZZZZZZZZ" is the maximum ULID timestamp (year 10889)
+  expect(parseUlidId("7ZZZZZZZZZZZZZZZZZZZZZZZZZ")).toBeNull();
+});
+
 test.each(["", "  "])("parseUlidId - handles empty input: '%s'", (input) => {
   const result = parseUlidId(input);
   expect(result).toBeNull();
@@ -121,6 +133,11 @@ test("parseUuidV7Id - accepts the epoch (timestamp 0) v7 UUID", () => {
   expect(result?.timestamp?.toISOString()).toBe("1970-01-01T00:00:00.000Z");
 });
 
+test("parseUuidV7Id - rejects v7 UUIDs with a timestamp in the future", () => {
+  // ffffffff-ffff = year 10889
+  expect(parseUuidV7Id("ffffffff-ffff-7000-8000-000000000000")).toBeNull();
+});
+
 test.each(["", "  "])("parseUuidV7Id - handles empty input: '%s'", (input) => {
   const result = parseUuidV7Id(input);
   expect(result).toBeFalsy();
@@ -148,6 +165,27 @@ test.each([
   expect(result).toBeTruthy();
   expect(result?.id).toBe(uuid);
   expect(result?.timestamp).toBeTruthy();
+});
+
+test("parseUuidV1Id - parses v1 UUID timestamp and node", () => {
+  // The RFC 4122 namespace UUID for DNS
+  const result = parseUuidV1Id("6ba7b810-9dad-11d1-80b4-00c04fd430c8");
+  expect(result).toBeTruthy();
+  expect(result?.timestamp.toISOString()).toBe("1998-02-04T22:13:53.151Z");
+  expect(result?.node).toBe("00:c0:4f:d4:30:c8");
+  expect(result?.isRandomNode).toBe(false);
+  expect(result?.clockSequence).toBe(0xb4);
+});
+
+test("parseUuidV1Id - detects a randomly generated node via the multicast bit", () => {
+  const result = parseUuidV1Id("6ba7b810-9dad-11d1-80b4-01c04fd430c8");
+  expect(result?.node).toBe("01:c0:4f:d4:30:c8");
+  expect(result?.isRandomNode).toBe(true);
+});
+
+test("parseUuidV1Id - rejects v1 UUIDs with a timestamp in the future", () => {
+  // time_hi 0xfff -> far future
+  expect(parseUuidV1Id("ffffffff-ffff-1fff-80b4-00c04fd430c8")).toBeNull();
 });
 
 test.each(["", "  "])("parseUuidV1Id - handles empty input: '%s'", (input) => {
@@ -192,23 +230,39 @@ test.each([
   expect(result).toBeNull();
 });
 
-test("parseSnowflakeId - parses Instagram ID", () => {
-  // Instagram media ID (example from public post)
-  const instagramId = "1234567890123456789"; // Generic valid format
-  const result = parseSnowflakeId(instagramId);
-  expect(result).toBeTruthy();
-  expect(result?.id).toBe(instagramId);
-  expect(result?.platforms).toContain("instagram");
+test("parseSnowflakeId - parses Twitter ID timestamp", () => {
+  const twitterId = "175928847299117063";
+  expect(parseSnowflakeId(twitterId)?.platforms).toContain("twitter");
+  expect(getSnowflakeTimestamp(twitterId, "twitter")?.toISOString()).toBe(
+    "2012-03-03T13:01:20.453Z",
+  );
 });
 
-test("parseSnowflakeId - parses Mastodon ID", () => {
-  // Mastodon uses snowflakes starting from Jan 1, 2017.
-  // This ID decodes to 2021-01-01 under the Mastodon epoch.
-  const mastodonId = "529448671641601234";
+test("parseSnowflakeId - parses Instagram ID (41 bit timestamp, 23 low bits)", () => {
+  const instagramId = "1234567890123456789";
+  const result = parseSnowflakeId(instagramId);
+  expect(result).toBeTruthy();
+  expect(result?.platforms).toContain("instagram");
+  expect(getSnowflakeTimestamp(instagramId, "instagram")?.toISOString()).toBe(
+    "2016-04-23T06:13:02.804Z",
+  );
+});
+
+test("parseSnowflakeId - parses Mastodon ID (48 bit unix timestamp, 16 low bits)", () => {
+  // Mastodon status IDs from late 2022 are ~1.09e17
+  const mastodonId = "109000000000000000";
   const result = parseSnowflakeId(mastodonId);
   expect(result).toBeTruthy();
-  expect(result?.id).toBe(mastodonId);
   expect(result?.platforms).toContain("mastodon");
+  expect(getSnowflakeTimestamp(mastodonId, "mastodon")?.toISOString()).toBe(
+    "2022-09-15T02:13:27.812Z",
+  );
+});
+
+test("parseSnowflakeId - rejects IDs that pre-date every platform", () => {
+  // Decodes to 1979 under the Mastodon layout and ~2 months after the
+  // Twitter/Discord/Instagram epochs, all before those platforms issued IDs
+  expect(parseSnowflakeId("20000000000000000")).toBeNull();
 });
 
 test("parseSnowflakeId - correctly identifies Discord ID", () => {
@@ -221,13 +275,13 @@ test("parseSnowflakeId - correctly identifies Discord ID", () => {
 
   // Verify the timestamp when using Discord epoch
   const timestamp = getSnowflakeTimestamp(discordId, "discord");
-  expect(timestamp?.getFullYear()).toBe(2017);
+  expect(timestamp?.toISOString()).toBe("2017-01-01T19:56:31.623Z");
 });
 
 test.each([
   "100000000000000", // 15 digits -> decodes within days of every epoch
   "999999999999999",
-  "9999999999999999", // 16 digits -> within weeks
+  "9999999999999999", // 16 digits -> within weeks (1974 under the Mastodon layout)
 ])("parseSnowflakeId - near-epoch numbers are not snowflakes: '%s'", (input) => {
   const result = parseSnowflakeId(input);
   expect(result).toBeNull();

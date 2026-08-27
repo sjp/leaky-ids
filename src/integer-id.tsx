@@ -1,24 +1,14 @@
-// very rare but handling the case where someone
-// may have used a number that is not safely incrementable in JS
-// e.g. if they use Number.MAX_SAFE_INTEGER we cannot increment than that
-const isDoubleIncrementable = (id: number) => {
-  return id <= Number.MAX_SAFE_INTEGER - 2;
-};
-
-const FALLBACK_USER_ID = 12345;
-
 // returns 3 exactly
-const getExampleIncrementingUserIds = (id: number) => {
-  const resolvedId = isDoubleIncrementable(id) ? id : FALLBACK_USER_ID;
-  return [resolvedId, resolvedId + 1, resolvedId + 2];
+const getExampleIncrementingUserIds = (id: bigint) => {
+  return [id, id + 1n, id + 2n];
 };
 
 export interface IntegerIdProps {
-  id: number;
+  id: bigint;
 }
 
 export const IntegerId = ({ id }: IntegerIdProps) => {
-  const exampleIncrementingIds = getExampleIncrementingUserIds(id);
+  const exampleIncrementingIds = getExampleIncrementingUserIds(id).map((n) => n.toString());
 
   return (
     <article>
@@ -26,8 +16,8 @@ export const IntegerId = ({ id }: IntegerIdProps) => {
         <h2 style={{ textAlign: "center" }}>Yes! ⚠</h2>
       </header>
       <p>
-        Your ID <code>{id}</code> might be an auto-incrementing integer, commonly used in databases
-        as unique identifiers.
+        Your ID <code>{id.toString()}</code> might be an auto-incrementing integer, commonly used in
+        databases as unique identifiers.
       </p>
       <p>
         When using an auto-incrementing integer, you can leak information on how many entities in

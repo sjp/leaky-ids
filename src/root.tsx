@@ -26,7 +26,7 @@ export const Root = () => {
         <section>
           <div class="grid">
             <div>
-              <form autocomplete="off">
+              <form autocomplete="off" onSubmit={(evt) => evt.preventDefault()}>
                 <fieldset>
                   <label>
                     Enter your ID
@@ -34,6 +34,9 @@ export const Root = () => {
                       name="user-id"
                       autofocus={true}
                       type="text"
+                      spellcheck={false}
+                      autocapitalize="off"
+                      autocorrect="off"
                       onInput={(evt) => {
                         setUserId(evt.currentTarget.value.trim());
                       }}

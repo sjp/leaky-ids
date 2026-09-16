@@ -34,7 +34,8 @@ export const TimeBasedId = ({
         <a href={formatHref} target="_blank" rel="noopener noreferrer">
           {formatName}
         </a>
-        {formatSuffix ? ` ${formatSuffix}` : ""}. This means we can determine when it was created.
+        {formatSuffix === undefined || formatSuffix === "" ? "" : ` ${formatSuffix}`}. This means we
+        can determine when it was created.
       </p>
       <Timestamp timestamp={timestamp} />
       {children}

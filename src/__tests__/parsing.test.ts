@@ -63,13 +63,13 @@ test("parseUlidId - parses ULID timestamp", () => {
   const result = parseUlidId(ulid);
   expect(result).toBeTruthy();
   expect(result?.id).toBe(ulid);
-  expect(result?.timestamp?.toISOString()).toBe("2025-03-07T03:06:47.391Z");
+  expect(result?.timestamp.toISOString()).toBe("2025-03-07T03:06:47.391Z");
 });
 
 test("parseUlidId - accepts the epoch (timestamp 0) ULID", () => {
   const result = parseUlidId("00000000000000000000000000");
   expect(result).toBeTruthy();
-  expect(result?.timestamp?.toISOString()).toBe("1970-01-01T00:00:00.000Z");
+  expect(result?.timestamp.toISOString()).toBe("1970-01-01T00:00:00.000Z");
 });
 
 test("parseUlidId - rejects ULIDs with a timestamp in the future", () => {
@@ -114,13 +114,13 @@ test("parseUuidV7Id - parses v7 UUID timestamp", () => {
   const result = parseUuidV7Id(uuid);
   expect(result).toBeTruthy();
   expect(result?.id).toBe(uuid);
-  expect(result?.timestamp?.toISOString()).toBe("2025-03-07T03:14:04.016Z");
+  expect(result?.timestamp.toISOString()).toBe("2025-03-07T03:14:04.016Z");
 });
 
 test("parseUuidV7Id - accepts the epoch (timestamp 0) v7 UUID", () => {
   const result = parseUuidV7Id("00000000-0000-7000-8000-000000000000");
   expect(result).toBeTruthy();
-  expect(result?.timestamp?.toISOString()).toBe("1970-01-01T00:00:00.000Z");
+  expect(result?.timestamp.toISOString()).toBe("1970-01-01T00:00:00.000Z");
 });
 
 test("parseUuidV7Id - rejects v7 UUIDs with a timestamp in the future", () => {

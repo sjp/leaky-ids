@@ -1,6 +1,6 @@
 import { decodeTime } from "./ulid";
 
-const ASCII_NUMERIC_CHARS_ONLY = /^\d+$/;
+const ASCII_NUMERIC_CHARS_ONLY = /^\d+$/u;
 
 export interface IntegerIdResult {
   id: bigint;
@@ -60,7 +60,7 @@ export const parseUlidId = (input: string): TimeBasedId | null => {
 // e.g. the following are equivalent:
 // - 01956e96-c283-702e-9e6d-1e94c85ce6a6
 // - 01956e96c283702e9e6d1e94c85ce6a6
-const HYPHEN_STRIPPED_UUID = /^(.{8})(.{4})(.{4})(.{4})(.{12})$/;
+const HYPHEN_STRIPPED_UUID = /^(.{8})(.{4})(.{4})(.{4})(.{12})$/u;
 const HYPHEN_STRIPPED_UUID_LENGTH = 32; // e.g.
 
 const normalizeUuid = (input: string): string => {
@@ -71,12 +71,12 @@ const normalizeUuid = (input: string): string => {
 
 // RFC 4122/9562 UUID: the version nibble leads the third group and the
 // variant bits (10xx) lead the fourth group.
-const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-([1-8])[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-([1-8])[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/iu;
 
 // Returns the UUID version (1-8), or null if the input is not a valid UUID.
 const getUuidVersion = (input: string): number | null => {
   const match = UUID_REGEX.exec(input);
-  return match ? Number.parseInt(match[1], 10) : null;
+  return match ? Number(match[1]) : null;
 };
 
 const getTimestampFromUuidV7 = (input: string): number | null => {
@@ -85,7 +85,7 @@ const getTimestampFromUuidV7 = (input: string): number | null => {
   }
 
   // first 12 chars represent ms since epoch (in hex)
-  const timestampHex = input.replaceAll("-", "").substring(0, 12);
+  const timestampHex = input.replaceAll("-", "").slice(0, 12);
   return Number.parseInt(timestampHex, 16);
 };
 
@@ -117,9 +117,9 @@ export interface UuidV1Result extends TimeBasedId {
 
 const getTimestampFromUuidV1 = (hex: string): number => {
   // UUIDv1 stores timestamp as 100-nanosecond intervals since Oct 15, 1582
-  const timeLow = hex.substring(0, 8);
-  const timeMid = hex.substring(8, 12);
-  const timeHi = hex.substring(12, 16);
+  const timeLow = hex.slice(0, 8);
+  const timeMid = hex.slice(8, 12);
+  const timeHi = hex.slice(12, 16);
 
   // Extract the 60-bit timestamp (remove version bits)
   const timeHiFiltered = (Number.parseInt(timeHi, 16) & 0x0fff).toString(16).padStart(4, "0");
@@ -132,8 +132,8 @@ const getTimestampFromUuidV1 = (hex: string): number => {
 };
 
 const getNodeFromUuidV1 = (hex: string): { node: string; isRandomNode: boolean } => {
-  const nodeHex = hex.substring(20, 32).toLowerCase();
-  const octets = nodeHex.match(/.{2}/g) ?? [];
+  const nodeHex = hex.slice(20, 32).toLowerCase();
+  const octets = nodeHex.match(/.{2}/gu) ?? [];
   const firstOctet = Number.parseInt(octets[0] ?? "0", 16);
   return {
     node: octets.join(":"),
@@ -144,7 +144,7 @@ const getNodeFromUuidV1 = (hex: string): { node: string; isRandomNode: boolean }
 const getClockSequenceFromUuidV1 = (hex: string): number => {
   // 14 bits: the clock_seq_hi_and_reserved octet (minus the 2 variant bits)
   // followed by clock_seq_low.
-  return Number.parseInt(hex.substring(16, 20), 16) & 0x3fff;
+  return Number.parseInt(hex.slice(16, 20), 16) & 0x3fff;
 };
 
 export const parseUuidV1Id = (input: string): UuidV1Result | null => {
@@ -175,7 +175,7 @@ export const parseUuidV1Id = (input: string): UuidV1Result | null => {
 // Snowflake IDs are 64-bit integers whose high bits are a millisecond timestamp.
 // The layout differs per platform: the epoch the timestamp counts from, and how
 // many low bits (worker/shard/sequence) sit below it.
-const SNOWFLAKE_REGEX = /^\d{15,20}$/; // Snowflakes are typically 17-19 digits
+const SNOWFLAKE_REGEX = /^\d{15,20}$/u; // Snowflakes are typically 17-19 digits
 
 export type SnowflakePlatform = "twitter" | "discord" | "instagram" | "mastodon";
 
@@ -275,7 +275,7 @@ export const parseSnowflakeId = (input: string): SnowflakeIdResult | null => {
 
 // KSUID parsing (K-Sortable Unique Identifier)
 // 27-character base62 string, first 4 bytes are timestamp
-const KSUID_REGEX = /^[0-9A-Za-z]{27}$/;
+const KSUID_REGEX = /^[0-9A-Za-z]{27}$/u;
 const KSUID_EPOCH = 1400000000; // May 14, 2014 (in seconds)
 const BASE62_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
@@ -284,7 +284,9 @@ const base62Decode = (input: string): bigint | null => {
     let result = 0n;
     for (const char of input) {
       const value = BASE62_CHARS.indexOf(char);
-      if (value === -1) return null;
+      if (value === -1) {
+        return null;
+      }
       result = result * 62n + BigInt(value);
     }
     return result;
@@ -323,7 +325,7 @@ export const parseKsuidId = (input: string): TimeBasedId | null => {
 
 // MongoDB ObjectId parsing
 // 24-character hex string, first 4 bytes are Unix timestamp
-const OBJECTID_REGEX = /^[0-9a-fA-F]{24}$/;
+const OBJECTID_REGEX = /^[0-9a-fA-F]{24}$/u;
 
 export const parseObjectId = (input: string): TimeBasedId | null => {
   if (!input || !OBJECTID_REGEX.test(input)) {
@@ -331,7 +333,7 @@ export const parseObjectId = (input: string): TimeBasedId | null => {
   }
 
   // First 8 hex chars (4 bytes) are the timestamp in seconds since Unix epoch
-  const timestampHex = input.substring(0, 8);
+  const timestampHex = input.slice(0, 8);
   const timestampSeconds = Number.parseInt(timestampHex, 16);
   const timestampMs = timestampSeconds * 1000;
 

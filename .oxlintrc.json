@@ -1,12 +1,100 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["typescript", "unicorn", "oxc"],
+  "plugins": [
+    "eslint",
+    "typescript",
+    "unicorn",
+    "oxc",
+    "import",
+    "promise",
+    "node",
+    "react",
+    "jsx-a11y",
+    "vitest"
+  ],
+  // Everything except `style` (pure formatting/taste, owned by oxfmt) and
+  // `restriction` (opinionated bans; the useful ones are picked out below).
   "categories": {
-    "correctness": "error"
+    "correctness": "error",
+    "suspicious": "error",
+    "perf": "error",
+    "pedantic": "error"
+  },
+  "rules": {
+    // --- Opted out of the enabled categories ---------------------------------
+    // Automatic JSX runtime (jsxImportSource: preact), so no import is needed.
+    "react/react-in-jsx-scope": "off",
+    // Would require `readonly` on every component's props type.
+    "typescript/prefer-readonly-parameter-types": "off",
+    // Arbitrary size limits, not correctness.
+    "eslint/max-lines": "off",
+    "eslint/max-lines-per-function": "off",
+    // Formatting preference.
+    "eslint/no-inline-comments": "off",
+    // Side-effect imports are how Vite pulls in stylesheets.
+    "import/no-unassigned-import": "off",
+    // `import preact from "@preact/preset-vite"` is the documented usage.
+    "import/no-named-as-default": "off",
+    // `role="img"` on an inline <svg> with a <title> is the accessible pattern.
+    "jsx-a11y/prefer-tag-over-role": "off",
+
+    // --- Footguns (from `restriction`, not on by category) -------------------
+    "eslint/no-eval": "error",
+    "eslint/no-new-func": "error",
+    "eslint/no-script-url": "error",
+    "eslint/no-alert": "error",
+    "eslint/no-console": "error",
+    "eslint/no-var": "error",
+    "eslint/prefer-const": "error",
+    "eslint/eqeqeq": "error",
+    "eslint/curly": "error",
+    "eslint/radix": "error",
+    "eslint/default-case": "error",
+    "eslint/guard-for-in": "error",
+    "eslint/no-param-reassign": "error",
+    "eslint/no-await-in-loop": "error",
+
+    // Type-aware: the rules that catch genuinely wrong code.
+    "typescript/no-explicit-any": "error",
+    "typescript/no-non-null-assertion": "error",
+    "typescript/no-unnecessary-condition": "error",
+    "typescript/no-unnecessary-type-assertion": "error",
+    "typescript/no-floating-promises": "error",
+    "typescript/no-misused-promises": "error",
+    "typescript/switch-exhaustiveness-check": "error",
+    "typescript/require-array-sort-compare": "error",
+    "typescript/prefer-nullish-coalescing": "error",
+    "typescript/prefer-optional-chain": "error",
+    "typescript/consistent-type-imports": "error",
+    "typescript/no-unsafe-argument": "error",
+    "typescript/no-unsafe-assignment": "error",
+    "typescript/no-unsafe-call": "error",
+    "typescript/no-unsafe-member-access": "error",
+    "typescript/no-unsafe-return": "error",
+
+    "import/no-cycle": "error",
+    "import/no-self-import": "error",
+    "import/no-duplicates": "error",
+    "import/no-absolute-path": "error",
+    "import/no-mutable-exports": "error",
+
+    "promise/no-return-wrap": "error",
+    "promise/param-names": "error",
+
+    "unicorn/error-message": "error",
+    "unicorn/throw-new-error": "error",
+    "unicorn/no-thenable": "error",
+    "unicorn/prefer-date-now": "error",
+    "unicorn/prefer-node-protocol": "error",
+    "unicorn/no-array-callback-reference": "error"
   },
   "options": {
     "typeAware": true,
-    "typeCheck": true
+    "typeCheck": true,
+    // A warning that nobody fails on is a warning nobody fixes.
+    "denyWarnings": true,
+    // Stale `oxlint-disable` comments are suppressions nobody asked for.
+    "reportUnusedDisableDirectives": "error"
   },
   "ignorePatterns": ["dist/**"],
   "env": {

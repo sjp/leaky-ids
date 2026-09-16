@@ -19,7 +19,7 @@ export const SnowflakeId = ({ id, candidates }: SnowflakeIdProps) => {
     >
       {candidates.length > 1 ? (
         <div style={{ marginBottom: "1rem" }}>
-          <label for="platform-select">
+          <label htmlFor="platform-select">
             <strong>Select platform:</strong>
           </label>
           <select
@@ -28,7 +28,9 @@ export const SnowflakeId = ({ id, candidates }: SnowflakeIdProps) => {
             onChange={(e) => {
               const platform = e.currentTarget.value;
               const next = candidates.find((c) => c.platform === platform);
-              if (next) setSelected(next);
+              if (next) {
+                setSelected(next);
+              }
             }}
             style={{ marginLeft: "0.5rem", padding: "0.25rem 0.5rem", fontSize: "1rem" }}
           >

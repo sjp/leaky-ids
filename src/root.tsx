@@ -26,7 +26,12 @@ export const Root = () => {
         <section>
           <div class="grid">
             <div>
-              <form autocomplete="off" onSubmit={(evt) => evt.preventDefault()}>
+              <form
+                autocomplete="off"
+                onSubmit={(evt) => {
+                  evt.preventDefault();
+                }}
+              >
                 <fieldset>
                   <label>
                     Enter your ID

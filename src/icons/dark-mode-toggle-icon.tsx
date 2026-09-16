@@ -1,5 +1,5 @@
-import type { CSSProperties, PropsWithChildren } from "preact/compat";
-import type { ComponentProps } from "preact";
+import type { PropsWithChildren } from "preact/compat";
+import type { ComponentProps, CSSProperties } from "preact";
 
 interface CoreHtmlProps extends PropsWithChildren {
   className?: string;
@@ -45,7 +45,7 @@ export const Classic = ({
   };
 
   const handleClick = () => {
-    onToggled?.(!toggled);
+    onToggled?.(toggled !== true);
   };
 
   return (

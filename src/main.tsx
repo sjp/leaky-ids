@@ -6,9 +6,13 @@ export const Main = () => {
 };
 
 if (typeof window !== "undefined") {
-  hydrate(<Main />, document.getElementById("app") as HTMLElement);
+  const root = document.querySelector("#app");
+  if (!root) {
+    throw new Error("Could not find the #app element to hydrate into");
+  }
+  hydrate(<Main />, root);
 }
 
-export const prerender = async (_data: unknown) => {
-  return await ssr(<Main />);
+export const prerender = (_data: unknown) => {
+  return ssr(<Main />);
 };

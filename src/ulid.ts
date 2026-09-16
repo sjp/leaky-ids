@@ -13,9 +13,7 @@ export interface LibError extends Error {
 }
 
 const createError = (message: string): LibError => {
-  const err = new Error(message) as LibError;
-  err.source = "ulid";
-  return err;
+  return Object.assign(new Error(message), { source: "ulid" });
 };
 
 export const decodeTime = (id: string): number => {
@@ -23,15 +21,15 @@ export const decodeTime = (id: string): number => {
     throw createError("malformed ulid");
   }
   const time = id
-    .substring(0, TIME_LEN)
+    .slice(0, TIME_LEN)
     .split("")
-    .reverse()
     .reduce((carry, char, index) => {
       const encodingIndex = ENCODING.indexOf(char);
       if (encodingIndex === -1) {
         throw createError(`invalid character found: ${char}`);
       }
-      return carry + encodingIndex * ENCODING_LEN ** index;
+      // Most significant character first, so the exponent counts down.
+      return carry + encodingIndex * ENCODING_LEN ** (TIME_LEN - 1 - index);
     }, 0);
   if (time > TIME_MAX) {
     throw createError("malformed ulid, timestamp too large");

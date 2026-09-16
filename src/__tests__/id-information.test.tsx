@@ -1,4 +1,4 @@
-import { expect, test } from "vite-plus/test";
+import { expect, test } from "vitest";
 import { render } from "preact-render-to-string";
 import { IdInformation } from "../id-information";
 

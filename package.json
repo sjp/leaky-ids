@@ -4,12 +4,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vp dev",
-    "build": "tsc -b && vp build",
-    "preview": "vp preview",
-    "lint": "vp lint",
-    "test-dev": "vp test",
-    "test": "vp test run"
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "fmt": "oxfmt",
+    "lint": "oxlint",
+    "check": "oxfmt --check && oxlint && tsc -b",
+    "test-dev": "vitest",
+    "test": "vitest run"
   },
   "dependencies": {
     "@picocss/pico": "^2.1.1",
@@ -18,13 +20,14 @@
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.10.6",
+    "oxfmt": "^0.68.0",
+    "oxlint": "^1.83.0",
+    "oxlint-tsgolint": "^7.0.2001",
     "preact-render-to-string": "^6.6.1",
     "sass-embedded": "^1.104.0",
     "typescript": "^7.0.2",
-    "vite-plus": "0.3.1"
-  },
-  "overrides": {
-    "vite": "npm:@voidzero-dev/vite-plus-core@0.3.1"
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1"
   },
   "packageManager": "npm@11.16.0"
 }

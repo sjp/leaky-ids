@@ -9,6 +9,8 @@ A small web application, intended to determine whether identifiers used in an ap
 - `npm run build`: Production-ready build
 - `npm run preview`: Run a production-like server
 - `npm run lint`: Scans code for potential issues via linting
+- `npm run fmt`: Formats all source files
+- `npm run check`: Checks formatting, lints and type checks in one go
 - `npm run test-dev`: Continuously runs tests, watching for changes
 - `npm run test`: Runs all unit tests once
 
@@ -35,7 +37,8 @@ It is largely built using the following:
 - [Preact](https://preactjs.com/)
 - [Vite](https://vite.dev/)
 - [Pico CSS](https://picocss.com/)
-- [Biome](https://biomejs.dev/)
+- [Vitest](https://vitest.dev/)
+- [Oxlint and Oxfmt](https://oxc.rs/)
 
 The choice of many of these libraries was to minimise the bundle size as much as possible.
 

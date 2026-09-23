@@ -11,7 +11,8 @@
     "lint": "oxlint",
     "check": "oxfmt --check && oxlint && tsc -b",
     "test-dev": "vitest",
-    "test": "vitest run"
+    "test": "vitest run",
+    "coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@picocss/pico": "^2.1.1",
@@ -20,6 +21,8 @@
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.10.6",
+    "@vitest/coverage-v8": "^5.0.1",
+    "happy-dom": "^20.14.5",
     "oxfmt": "^0.68.0",
     "oxlint": "^1.83.0",
     "oxlint-tsgolint": "^7.0.2002",

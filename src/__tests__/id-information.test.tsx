@@ -71,3 +71,11 @@ test("renders a single-platform Snowflake without a selector", () => {
   expect(html).not.toContain("platform-select");
   expect(html).toContain("2021-02-02T05:20:45.597Z");
 });
+
+test("renders a v1 UUID with a randomly generated node", () => {
+  const html = renderId("6ba7b810-9dad-11d1-80b4-01c04fd430c8");
+  expect(html).toContain("01:c0:4f:d4:30:c8");
+  expect(html).toContain("randomly generated, not a real MAC");
+  expect(html).toContain("multicast bit set");
+  expect(html).not.toContain("likely a real MAC address");
+});

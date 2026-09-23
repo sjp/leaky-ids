@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { defineConfig } from "vite";
 import preact from "@preact/preset-vite";
 
@@ -12,4 +13,10 @@ export default defineConfig({
     }),
   ],
   css: { preprocessorOptions: { scss: { quietDeps: true } } },
+  test: {
+    coverage: {
+      include: ["src/**"],
+      exclude: ["src/__tests__/**"],
+    },
+  },
 });

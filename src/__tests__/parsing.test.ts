@@ -325,3 +325,26 @@ test.each([
   const result = parseObjectId(input);
   expect(result).toBeNull();
 });
+
+test("parseSnowflakeId - all-zero input carries no timestamp", () => {
+  expect(parseSnowflakeId("000000000000000000")).toBeNull();
+});
+
+test("parseSnowflakeId - lists every plausible platform in SNOWFLAKE_EPOCHS order", () => {
+  const platforms = parseSnowflakeId("1060911982267932672")?.candidates.map((c) => c.platform);
+  expect(platforms).toEqual(["twitter", "discord", "instagram"]);
+});
+
+test("parseKsuidId - rejects KSUIDs with a timestamp in the future", () => {
+  // The maximum KSUID (all 0xff bytes) decodes to the year 2150
+  expect(parseKsuidId("aWgEPTl1tmebfsQzFP4bxwgy80V")).toBeNull();
+});
+
+test("parseObjectId - rejects ObjectIds with a timestamp before 2000", () => {
+  expect(parseObjectId("000000000000000000000000")).toBeNull();
+});
+
+test("parseObjectId - rejects ObjectIds with a timestamp in the future", () => {
+  // 0xffffffff seconds is the year 2106
+  expect(parseObjectId("ffffffff0000000000000000")).toBeNull();
+});

@@ -1,6 +1,9 @@
 import { expect, test } from "vitest";
 import { render } from "preact-render-to-string";
 import { IdInformation } from "../id-information";
+import { freezeClock } from "./clock";
+
+freezeClock();
 
 const renderId = (id: string) => render(<IdInformation id={id} />);
 

@@ -1,4 +1,4 @@
-import { expect, test } from "vitest";
+import { expect, test, vi } from "vitest";
 import {
   parseIntegerId,
   parseUlidId,
@@ -8,6 +8,9 @@ import {
   parseKsuidId,
   parseObjectId,
 } from "../parsing";
+import { freezeClock, NOW, ONE_DAY_MS } from "./clock";
+
+freezeClock();
 
 test("parseIntegerId - parses basic integer", () => {
   expect(parseIntegerId("123")).toEqual({ id: 123n });
@@ -347,4 +350,62 @@ test("parseObjectId - rejects ObjectIds with a timestamp before 2000", () => {
 test("parseObjectId - rejects ObjectIds with a timestamp in the future", () => {
   // 0xffffffff seconds is the year 2106
   expect(parseObjectId("ffffffff0000000000000000")).toBeNull();
+});
+
+// The newest timestamp a parser accepts: one day of clock skew past NOW.
+const LATEST_MS = NOW.getTime() + ONE_DAY_MS;
+
+const CROCKFORD = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+
+const ulidAt = (ms: number) => {
+  let time = "";
+  for (let i = 0, rest = ms; i < 10; i++, rest = Math.floor(rest / 32)) {
+    time = CROCKFORD.charAt(rest % 32) + time;
+  }
+  return `${time}0000000000000000`;
+};
+
+const uuidV7At = (ms: number) => {
+  const hex = ms.toString(16).padStart(12, "0");
+  return `${hex.slice(0, 8)}-${hex.slice(8)}-7000-8000-000000000000`;
+};
+
+const uuidV1At = (ms: number) => {
+  const hex = ((BigInt(ms) + 12219292800000n) * 10000n).toString(16).padStart(15, "0");
+  return `${hex.slice(7)}-${hex.slice(3, 7)}-1${hex.slice(0, 3)}-80b4-00c04fd430c8`;
+};
+
+const twitterSnowflakeAt = (ms: number) => ((BigInt(ms) - 1288834974657n) << 22n).toString();
+
+const objectIdAt = (seconds: number) => `${seconds.toString(16).padStart(8, "0")}0000000000000000`;
+
+test.each([
+  { name: "ULID", parse: parseUlidId, at: ulidAt },
+  { name: "v7 UUID", parse: parseUuidV7Id, at: uuidV7At },
+  { name: "v1 UUID", parse: parseUuidV1Id, at: uuidV1At },
+])("$name - accepts up to one day past now, rejects a millisecond later", ({ parse, at }) => {
+  expect(parse(at(LATEST_MS))?.timestamp.getTime()).toBe(LATEST_MS);
+  expect(parse(at(LATEST_MS + 1))).toBeNull();
+});
+
+test("parseSnowflakeId - drops a platform once its date is more than a day past now", () => {
+  const latest = parseSnowflakeId(twitterSnowflakeAt(LATEST_MS))?.candidates[0];
+  expect(latest?.platform).toBe("twitter");
+  expect(latest?.timestamp.getTime()).toBe(LATEST_MS);
+  const tooLate = parseSnowflakeId(twitterSnowflakeAt(LATEST_MS + 1))?.candidates;
+  expect(tooLate?.map((c) => c.platform)).not.toContain("twitter");
+});
+
+test("parseObjectId - accepts up to one day past now, rejects a second later", () => {
+  const latestSeconds = LATEST_MS / 1000;
+  expect(parseObjectId(objectIdAt(latestSeconds))?.timestamp.getTime()).toBe(LATEST_MS);
+  expect(parseObjectId(objectIdAt(latestSeconds + 1))).toBeNull();
+});
+
+test("parsers follow the clock rather than a fixed cutoff", () => {
+  const nextYear = uuidV7At(NOW.getTime() + 365 * ONE_DAY_MS);
+  expect(parseUuidV7Id(nextYear)).toBeNull();
+
+  vi.setSystemTime(NOW.getTime() + 365 * ONE_DAY_MS);
+  expect(parseUuidV7Id(nextYear)).not.toBeNull();
 });

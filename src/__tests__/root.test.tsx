@@ -1,11 +1,12 @@
 // @vitest-environment happy-dom
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { Root } from "../root";
+import { NOW } from "./clock";
 import { act, mount } from "./dom";
 import { mockMatchMedia } from "./match-media";
 
 beforeEach(() => {
-  vi.useFakeTimers();
+  vi.useFakeTimers({ now: NOW });
   mockMatchMedia(false);
 });
 

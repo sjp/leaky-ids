@@ -2,7 +2,10 @@
 import { expect, test } from "vitest";
 import { SnowflakeId } from "../snowflake-id";
 import { parseSnowflakeId } from "../parsing";
+import { freezeClock } from "./clock";
 import { act, mount } from "./dom";
+
+freezeClock();
 
 const ID = "1060911982267932672";
 

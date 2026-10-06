@@ -1,7 +1,7 @@
-import type { PropsWithChildren } from "preact/compat";
-import type { ComponentProps, CSSProperties } from "preact";
+import type { ComponentChildren, ComponentProps, CSSProperties } from "preact";
 
-interface CoreHtmlProps extends PropsWithChildren {
+interface CoreHtmlProps {
+  children?: ComponentChildren;
   className?: string;
   title?: string;
   type?: string;

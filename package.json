@@ -22,14 +22,14 @@
   "devDependencies": {
     "@preact/preset-vite": "^2.10.6",
     "@vitest/coverage-v8": "^5.0.5",
-    "happy-dom": "^21.0.3",
-    "oxfmt": "^0.73.0",
-    "oxlint": "^1.88.0",
-    "oxlint-tsgolint": "^7.0.2004",
+    "happy-dom": "^21.0.4",
+    "oxfmt": "^0.74.0",
+    "oxlint": "^1.89.0",
+    "oxlint-tsgolint": "^7.0.2005",
     "preact-render-to-string": "^6.8.1",
-    "sass-embedded": "^1.105.2",
+    "sass-embedded": "^1.106.1",
     "typescript": "^7.0.2",
-    "vite": "^8.3.4",
+    "vite": "^8.3.5",
     "vitest": "^5.0.3"
   },
   "packageManager": "npm@11.16.0"

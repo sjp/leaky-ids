@@ -1,5 +1,8 @@
 # Is My ID Leaky
 
+[![CI](https://github.com/sjp/leaky-ids/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/sjp/leaky-ids/actions/workflows/ci.yml)
+[![Website](https://img.shields.io/website?url=https%3A%2F%2Fsjp.github.io%2Fleaky-ids%2F)](https://sjp.github.io/leaky-ids/)
+
 A small web application, intended to determine whether identifiers used in an application reveal unwanted information.
 
 ## CLI Commands

@@ -16,20 +16,20 @@
   },
   "dependencies": {
     "@picocss/pico": "^2.1.1",
-    "preact": "^11.1.0",
+    "preact": "^11.1.1",
     "preact-iso": "^2.12.2"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.10.6",
-    "@vitest/coverage-v8": "^5.0.5",
+    "@vitest/coverage-v8": "^5.1.0",
     "happy-dom": "^21.0.4",
-    "oxfmt": "^0.75.0",
-    "oxlint": "^1.90.0",
-    "oxlint-tsgolint": "^7.0.2005",
+    "oxfmt": "^0.76.0",
+    "oxlint": "^1.91.0",
+    "oxlint-tsgolint": "^7.0.2006",
     "preact-render-to-string": "^6.8.2",
-    "sass-embedded": "^1.107.0",
+    "sass-embedded": "^1.108.0",
     "typescript": "^7.0.2",
-    "vite": "^8.3.5",
+    "vite": "^8.3.6",
     "vitest": "^5.0.3"
   },
   "packageManager": "npm@11.16.0"
